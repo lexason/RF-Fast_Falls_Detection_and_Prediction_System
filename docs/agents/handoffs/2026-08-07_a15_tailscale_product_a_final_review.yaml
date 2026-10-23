@@ -1,0 +1,78 @@
+handoff_id: "c10a3651-7ddf-487d-a544-e0a508d02e62"
+agent_id: "A15_RED_TEAM_AND_INDEPENDENT_AUDIT_AGENT"
+timestamp_utc: "2026-08-07T08:27:16Z"
+task:
+  objective: "Final independent review of the Tailscale dashboard, continuous supervisor, N210 evidence, and Product-A experiment."
+  scope: "CARAT silent DEVELOPMENT evidence only; no RF action, sister-project access, promotion, or clinical claim."
+inputs:
+  files:
+    - "artifacts/runs/20260807T082542.886108Z/run.json"
+    - "scripts/run_offline_poc.py"
+    - "dashboard/app.py"
+    - "docs/evidence/diagnostics/2026-08-07/n210_post_stop_receive_only_probe_2026-08-07.txt"
+    - "artifacts/evaluations/rf-sensing-falls-product-a-physics6-dev-001-grouped-development-v1.json"
+    - "reports/validation/2026-08-07_tailscale_n210_g3_reassessment.md"
+  data_versions:
+    - "2026-07-18_fall_gain5 (quarantined development error analysis)"
+  model_versions:
+    - "rf-sensing-falls-v3-legacy-baseline"
+    - "rf-sensing-falls-product-a-physics6-dev-001"
+  assumptions:
+    - "A pass applies only to the silent controlled DEVELOPMENT POC and its engineering evidence."
+work_performed:
+  commands:
+    - "Independent source/run/artifact hash verification"
+    - "Listener and active PID verification"
+    - "Review of injected-child-failure and cross-host Origin regressions"
+    - "Review of the timestamped post-stop N210 probe transcript"
+    - "make test and governance result review"
+  files_changed: []
+  analyses:
+    - "Continuous process supervision"
+    - "Tailscale dashboard isolation and WebSocket Origin enforcement"
+    - "Hardware evidence ordering/provenance"
+    - "Product-A threshold and promotion controls"
+findings:
+  confirmed:
+    - "A15-LIFECYCLE-001 PASS: every child is polled during replay; injected child death is tested."
+    - "A15-SECURITY-001 PASS: Origin hostname must exactly equal request hostname; cross-host use is rejected."
+    - "A15-EVIDENCE-001 PASS: post-stop transcript checksum and command ordering match."
+    - "A15-MANIFEST-001 PASS: loopback network policy is explicitly scoped to the internal pipeline."
+    - "Active run 20260807T082542.886108Z is RUNNING with all six recorded PIDs alive."
+    - "Product-A remains threshold-free, failed-gate, promotion-blocked DEVELOPMENT evidence."
+  uncertain:
+    - "Long-duration completion evidence will exist only after the currently active bounded run closes."
+  defects: []
+risks:
+  new: []
+  changed:
+    - "All blockers from the first A15 review were closed."
+    - "G3 model/data limitations remain and are not an engineering POC pass."
+evidence:
+  logs:
+    - "55 tests passed; 3 hardware tests deselected"
+    - "semantic governance validation: PASS"
+  reports:
+    - "reports/validation/2026-08-07_tailscale_n210_g3_reassessment.md"
+  plots: []
+  checksums:
+    - "active run:dc34b95d5f1d3b1432c5e9cb5819b0b52844ef75481d13ad794d070d176c19a5"
+    - "report:8d3475b4f39a3f0002dce93b548cb2425d7a15ea026fc4a2e6564ac8600cddf6"
+    - "post-stop probe:2efd73638851fb33a0c9ebf1175df6fd34b6b8720ce61c534fc49c22937a0e9a"
+    - "supervisor:3c2a3f5d6efb039f652397d048791a6584d896a38dc5c4aa5e1b831493a7caf3"
+    - "dashboard:efed45fac70c22f173e855944cc2e0da4297bfd2ab15eefd978c6798842e118a"
+decision:
+  status: "PASS"
+  silent_development_poc: "PASS"
+  tailscale_dashboard: "PASS_FOR_CONTROLLED_DEVELOPMENT"
+  product_a_experiment: "PASS_AS_THRESHOLD_FREE_DEVELOPMENT_EVIDENCE"
+  framework_g3_fall_validation: "FAIL"
+  production_promotion: "NOT_AUTHORIZED"
+  rationale: "Remote engineering controls and evidence are sound; the model evidence remains insufficient for G3 or promotion."
+next_actions:
+  required:
+    - "Keep dashboard outputs silent and model claims uncalibrated."
+    - "Collect independent verified participant/room/lie-down/fall evidence before any G3 review."
+  optional:
+    - "Archive the bounded run closeout when it completes."
+reviewers_required: []

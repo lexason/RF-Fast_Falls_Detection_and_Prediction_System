@@ -1,0 +1,339 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rf-sensing-falls.local/schemas/workflow.schema.json",
+  "title": "Allowlisted declarative workflow",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "api_version",
+    "id",
+    "display_name",
+    "version",
+    "safety_class",
+    "required_scopes",
+    "approval_policy",
+    "allowed_environments",
+    "allowed_source_states",
+    "locks",
+    "timeout_seconds",
+    "dry_run_supported",
+    "idempotency",
+    "parameters",
+    "steps",
+    "postconditions",
+    "audit"
+  ],
+  "properties": {
+    "api_version": {"const": "v1"},
+    "id": {"$ref": "#/$defs/id"},
+    "display_name": {"type": "string", "minLength": 1, "maxLength": 96},
+    "version": {"type": "integer", "minimum": 1},
+    "safety_class": {"enum": ["informational", "operational", "maintenance", "rf_transmission", "clinical", "destructive"]},
+    "required_scopes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{1,31}:[a-z][a-z0-9_-]{1,31}$"}
+    },
+    "approval_policy": {"$ref": "#/$defs/approvalPolicy"},
+    "allowed_environments": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"enum": ["DEVELOPMENT", "SILENT_PILOT", "CLINICAL_EVALUATION"]}
+    },
+    "allowed_source_states": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/state"}
+    },
+    "locks": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{1,31}:[A-Za-z0-9][A-Za-z0-9_.:-]{0,95}$"}
+    },
+    "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 86400},
+    "dry_run_supported": {"const": true},
+    "idempotency": {"$ref": "#/$defs/idempotency"},
+    "parameters": {
+      "type": "object",
+      "maxProperties": 64,
+      "propertyNames": {"$ref": "#/$defs/id"},
+      "additionalProperties": {"$ref": "#/$defs/parameter"}
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {"$ref": "#/$defs/step"}
+    },
+    "postconditions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {"$ref": "#/$defs/condition"}
+    },
+    "rollback": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {"$ref": "#/$defs/rollbackStep"}
+    },
+    "rollback_not_safe_reason": {"type": "string", "minLength": 10, "maxLength": 512},
+    "audit": {"$ref": "#/$defs/audit"},
+    "approval_binding": {"$ref": "#/$defs/approvalBinding"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "safety_class": {"enum": ["rf_transmission", "clinical", "destructive"]}
+        },
+        "required": ["safety_class"]
+      },
+      "then": {
+        "required": ["approval_binding"],
+        "properties": {
+          "approval_policy": {
+            "properties": {
+              "mode": {"enum": ["two_person", "single_operator"]},
+              "reason_required": {"const": true},
+              "reference_required": {"const": true},
+              "approval_ttl_seconds": {"minimum": 1}
+            }
+          }
+        }
+      }
+    }
+  ],
+  "oneOf": [
+    {"required": ["rollback"], "not": {"required": ["rollback_not_safe_reason"]}},
+    {"required": ["rollback_not_safe_reason"], "not": {"required": ["rollback"]}}
+  ],
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]{1,63}$"},
+    "actionId": {
+      "enum": [
+        "config.validate",
+        "state.reconcile",
+        "health.collect",
+        "pipeline.start",
+        "pipeline.start_live_sdr",
+        "pipeline.stop",
+        "pipeline.emergency_stop",
+        "data.capture_raw_iq",
+        "model.train_candidate",
+        "model.evaluate_candidate",
+        "model.recalibrate_candidate",
+        "model.promote",
+        "model.rollback",
+        "rf.conducted_bounded_test"
+      ]
+    },
+    "state": {"enum": ["UNINITIALISED", "STOPPED", "MAINTENANCE", "PREFLIGHT", "STARTING", "RUNNING", "DEGRADED", "STOPPING", "FAILED"]},
+    "approvalPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "reason_required", "reference_required", "distinct_approvers", "approval_ttl_seconds"],
+      "properties": {
+        "mode": {"enum": ["none", "confirmation", "single_operator", "two_person"]},
+        "reason_required": {"type": "boolean"},
+        "reference_required": {"type": "boolean"},
+        "distinct_approvers": {"type": "boolean"},
+        "approval_ttl_seconds": {"type": "integer", "minimum": 0, "maximum": 86400},
+        "minimum_deliberation_seconds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 86400,
+          "description": "single_operator mode only: enforced minimum wait between request and approval, so the same operator's approval cannot be the same motion as the request."
+        }
+      }
+    },
+    "approvalBinding": {
+      "oneOf": [
+        {"$ref": "#/$defs/staticApprovalBinding"},
+        {"$ref": "#/$defs/runtimeApprovalBinding"}
+      ]
+    },
+    "runtimeApprovalBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["binding_mode", "workflow_digest_bound", "parameters_bound", "environment_bound", "reason_and_reference_bound", "approver_sessions_bound"],
+      "properties": {
+        "binding_mode": {"const": "runtime"},
+        "workflow_digest_bound": {"const": true},
+        "parameters_bound": {"const": true},
+        "environment_bound": {"const": true},
+        "reason_and_reference_bound": {"const": true},
+        "approver_sessions_bound": {"const": true}
+      }
+    },
+    "staticApprovalBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "approval_id",
+        "approval_digest",
+        "workflow_definition_sha256",
+        "approved_arguments_sha256",
+        "signature_file",
+        "approved_at_utc",
+        "expires_at_utc",
+        "approver_ids"
+      ],
+      "properties": {
+        "approval_id": {"$ref": "#/$defs/id"},
+        "approval_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "workflow_definition_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "approved_arguments_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "approved_profile_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "signature_file": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"},
+        "approved_at_utc": {"type": "string", "format": "date-time"},
+        "expires_at_utc": {"type": "string", "format": "date-time"},
+        "approver_ids": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{2,63}$"}
+        }
+      }
+    },
+    "idempotency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "duplicate_behavior"],
+      "properties": {
+        "scope": {"enum": ["workflow", "workflow_and_parameters", "resource"]},
+        "duplicate_behavior": {"enum": ["return_existing", "reject"]}
+      }
+    },
+    "parameter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "required"],
+      "properties": {
+        "type": {"enum": ["string", "integer", "number", "boolean"]},
+        "required": {"type": "boolean"},
+        "enum": {"type": "array", "minItems": 1, "maxItems": 128, "uniqueItems": true, "items": {"type": ["string", "integer", "number", "boolean"]}},
+        "minimum": {"type": "number"},
+        "maximum": {"type": "number"},
+        "min_length": {"type": "integer", "minimum": 0, "maximum": 1024},
+        "max_length": {"type": "integer", "minimum": 1, "maximum": 1024},
+        "pattern": {
+          "enum": [
+            "^[a-z][a-z0-9_]{1,63}$",
+            "^[a-z0-9][a-z0-9._-]{2,63}$",
+            "^[A-Za-z0-9][A-Za-z0-9._-]{2,95}$",
+            "^[a-f0-9]{64}$",
+            "^(?!/)(?!.*\\.\\./).+\\.json$"
+          ]
+        },
+        "default": {"type": ["string", "integer", "number", "boolean", "null"]}
+      }
+    },
+    "argument": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["literal"],
+          "properties": {
+            "literal": {
+              "oneOf": [
+                {"type": ["string", "integer", "number", "boolean", "null"]},
+                {"type": "array", "maxItems": 64, "items": {"type": ["string", "integer", "number", "boolean"]}}
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["parameter_ref"],
+          "properties": {"parameter_ref": {"$ref": "#/$defs/id"}}
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["context_ref"],
+          "properties": {
+            "context_ref": {
+              "enum": ["run_id", "actor_id", "target_environment", "workflow_digest", "correlation_id", "approved_model_id", "active_config_id"]
+            }
+          }
+        }
+      ]
+    },
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subject", "operator", "expected"],
+      "properties": {
+        "subject": {"type": "string", "pattern": "^[a-z][a-z0-9_.]{1,127}$"},
+        "operator": {"enum": ["eq", "ne", "lt", "lte", "gt", "gte", "in", "not_in", "is_true", "is_false"]},
+        "expected": {"type": ["string", "integer", "number", "boolean", "null", "array"], "maxItems": 64}
+      }
+    },
+    "retry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_attempts", "backoff_seconds"],
+      "properties": {
+        "max_attempts": {"type": "integer", "minimum": 1, "maximum": 5},
+        "backoff_seconds": {"type": "number", "minimum": 0, "maximum": 300}
+      }
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "action", "arguments", "depends_on", "timeout_seconds", "retry", "cancellable", "on_failure"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "action": {"$ref": "#/$defs/actionId"},
+        "arguments": {
+          "type": "object",
+          "maxProperties": 64,
+          "propertyNames": {"$ref": "#/$defs/id"},
+          "additionalProperties": {"$ref": "#/$defs/argument"}
+        },
+        "depends_on": {"type": "array", "maxItems": 32, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "when": {"$ref": "#/$defs/condition"},
+        "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 3600},
+        "retry": {"$ref": "#/$defs/retry"},
+        "cancellable": {"type": "boolean"},
+        "on_failure": {"enum": ["fail", "rollback", "continue_degraded"]}
+      }
+    },
+    "rollbackStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "arguments", "timeout_seconds"],
+      "properties": {
+        "action": {"$ref": "#/$defs/actionId"},
+        "arguments": {"type": "object", "maxProperties": 64, "propertyNames": {"$ref": "#/$defs/id"}, "additionalProperties": {"$ref": "#/$defs/argument"}},
+        "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 3600}
+      }
+    },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_types", "redact_fields", "reason_field"],
+      "properties": {
+        "event_types": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z][a-z0-9_.]{2,95}$"}
+        },
+        "redact_fields": {"type": "array", "maxItems": 64, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9_.]{1,127}$"}},
+        "reason_field": {"type": "string", "pattern": "^[a-z][a-z0-9_]{1,63}$"}
+      }
+    }
+  }
+}

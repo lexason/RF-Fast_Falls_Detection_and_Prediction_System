@@ -1,0 +1,23 @@
+schema_version: "1.0"
+project_slug: rf-sensing-falls
+environment: DEVELOPMENT
+mode: silent_research_poc
+network_policy: loopback_only
+dashboard:
+  host: 127.0.0.1
+  port: 18090
+pipeline:
+  raw_iq: tcp://127.0.0.1:15880
+  spectrogram: tcp://127.0.0.1:15991
+  classifier: tcp://127.0.0.1:15993
+  activity: tcp://127.0.0.1:15994
+model_dir: models/production
+default_session: data/raw/2026-07-18_fall_gain5
+replay:
+  speed: 1.0
+  max_seconds: 30.0
+  repeat: false
+limitations:
+  - The model performance gate failed.
+  - Outputs are silent research candidates, not alerts.
+  - The legacy corpus cannot establish unseen-participant or unseen-room generalisation.

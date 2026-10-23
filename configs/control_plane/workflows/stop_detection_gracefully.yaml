@@ -1,0 +1,34 @@
+api_version: v1
+id: stop_detection_gracefully
+display_name: Gracefully stop simulation detection
+version: 1
+safety_class: operational
+required_scopes: [detection:start, detection:stop]
+approval_policy: {mode: confirmation, reason_required: true, reference_required: false, distinct_approvers: false, approval_ttl_seconds: 0}
+allowed_environments: [DEVELOPMENT]
+allowed_source_states: [STARTING, RUNNING, DEGRADED, FAILED]
+locks: [pipeline:detection]
+timeout_seconds: 60
+dry_run_supported: true
+idempotency: {scope: workflow_and_parameters, duplicate_behavior: return_existing}
+parameters:
+  reason: {type: string, required: true, min_length: 10, max_length: 512}
+steps:
+  - id: stop_pipeline
+    action: pipeline.stop
+    arguments: {reason: {parameter_ref: reason}}
+    depends_on: []
+    timeout_seconds: 30
+    retry: {max_attempts: 2, backoff_seconds: 0.1}
+    cancellable: false
+    on_failure: rollback
+postconditions:
+  - {subject: platform.state, operator: eq, expected: STOPPED}
+rollback:
+  - action: pipeline.start
+    arguments: {profile: {literal: simulation}}
+    timeout_seconds: 30
+audit:
+  event_types: [workflow.requested, workflow.step.completed, workflow.completed, workflow.failed]
+  redact_fields: [authorization, token]
+  reason_field: reason

@@ -1,0 +1,27 @@
+schema_version: "1.0"
+profile_id: lab_cw_2462
+environment: DEVELOPMENT
+status: ENABLED_FOR_SUPERVISED_WORKFLOW
+device_serial: "3253F7C"
+centre_frequency_hz: 2462000000
+sample_rate_hz: 250000
+occupied_bandwidth_hz: 1
+waveform: cw_constant_envelope
+tx_port: TX/RX
+rx_port: RX2
+tx_antenna_inventory_id: digitech_24ghz_5dbi_omni
+rx_antenna_inventory_id: digitech_24ghz_5dbi_omni
+maximum_tx_gain_db: 15
+maximum_rx_gain_db: 35
+maximum_duration_seconds: 3600
+location: laboratory_bench
+runtime_controls:
+  two_person_approval: true
+  approval_reference_required: true
+  automatic_timeout_required: true
+  exclusive_usrp_lock_required: true
+  emergency_stop_required: true
+  start_at_minimum_gain: true
+notes:
+  - This is a parameter profile, not a standing authority to transmit.
+  - Every run is bound at runtime to exact parameters, the profile digest, two authenticated approvers, a reason, a reference, and an expiry.

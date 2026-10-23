@@ -1,0 +1,45 @@
+{
+  "model": "v4 hierarchical STAGED (stage1 idle/walk/transient -> stage2 sit_down/stand_up/lie_down/fall/noise) -- not yet deployed, see STATE.md 2026-08-02",
+  "trained_on": "data/processed/g3_features_v4_with_noise.parquet (v3's 3487 windows + 77 new 'noise' windows from 2026-08-02_clean_scripted_session's confirmed zero-transition segments)",
+  "n_windows_total": 3564,
+  "n_noise_windows": 77,
+  "feature_names": [
+    "spectral_centroid_hz",
+    "doppler_bandwidth_hz",
+    "spectral_entropy",
+    "energy_db",
+    "torso_line_strength",
+    "transient_score_db",
+    "descent_speed_hz_per_s",
+    "post_event_stillness_db",
+    "event_duration_s"
+  ],
+  "stage1_classes": [
+    "idle",
+    "walk",
+    "transient"
+  ],
+  "stage2_classes": [
+    "sit_down",
+    "stand_up",
+    "lie_down",
+    "fall",
+    "noise"
+  ],
+  "final_classes": [
+    "idle",
+    "walk",
+    "sit_down",
+    "stand_up",
+    "lie_down",
+    "fall",
+    "noise"
+  ],
+  "fall_decision_threshold": null,
+  "fall_threshold_calibration": "NOT YET RECALIBRATED -- v3's threshold=0.50 was calibrated against a 4-class stage2 softmax; with 'noise' now competing for probability mass the same threshold has different meaning. Must re-sweep before deployment (see STATE.md).",
+  "fall_probability_formula": "p_fall = p(stage1=transient) * p(stage2=fall | transient)",
+  "window_s": 3.0,
+  "hop_s": 0.5,
+  "known_limitation": "noise class trained on 77 examples from a SINGLE session (2026-08-02_clean_scripted_session) -- no leave-one-session-out validation possible for this class yet. Treat as a first pass; more noise-class data from the 2026-08-05 (Tuesday) live session should be folded in before treating this as production-hardened.",
+  "calibration_note": "This threshold governs ONLY the binary fall-vs-not-fall decision, calibrated separately from stage1/stage2's own argmax outputs (which remain uncalibrated -- used as-is for idle/walk/sit_down/stand_up/lie_down/noise predictions)."
+}

@@ -1,0 +1,167 @@
+schema_version: "1.0"
+registry_id: phase1_offline_action_registry
+registry_status: PROPOSED_NOT_EXECUTABLE
+execution_enabled: false
+description: >-
+  Closed vocabulary for schema and semantic validation. The registry itself is
+  not an executor and grants no privilege; the separately authenticated runtime
+  gateway may implement these exact actions after enforcing state, scope,
+  approvals, locks, parameter bounds, and environment capability.
+actions:
+  config.validate:
+    allowed_safety_classes: [operational, maintenance]
+    required_scopes: [detection:read]
+    required_locks: [pipeline:preflight]
+    allowed_arguments: [profile]
+    required_arguments: [profile]
+    argument_rules:
+      profile: {type: string, enum: [simulation, replay, live_sdr], max_length: 32}
+    idempotent: true
+    minimum_approval: confirmation
+  state.reconcile:
+    allowed_safety_classes: [operational, maintenance, rf_transmission]
+    required_scopes: [detection:read]
+    required_locks: [pipeline:preflight]
+    allowed_arguments: [target]
+    required_arguments: [target]
+    argument_rules:
+      target: {type: string, enum: [STOPPED, MAINTENANCE], max_length: 16}
+    idempotent: true
+    minimum_approval: confirmation
+  health.collect:
+    allowed_safety_classes: [informational, operational]
+    required_scopes: [health:read]
+    required_locks: [pipeline:health]
+    allowed_arguments: [profile]
+    required_arguments: []
+    argument_rules:
+      profile: {type: string, pattern: "^[a-z][a-z0-9_]{1,63}$", max_length: 64}
+    idempotent: true
+    minimum_approval: none
+  pipeline.start:
+    allowed_safety_classes: [operational]
+    required_scopes: [detection:start]
+    required_locks: [pipeline:detection]
+    allowed_arguments: [profile, replay_session]
+    required_arguments: [profile]
+    argument_rules:
+      profile: {type: string, enum: [simulation, replay], pattern: "^[a-z][a-z0-9_]{1,63}$", max_length: 64}
+      replay_session: {type: string, min_length: 3, max_length: 96}
+    idempotent: true
+    minimum_approval: confirmation
+  pipeline.start_live_sdr:
+    allowed_safety_classes: [rf_transmission]
+    required_scopes: [detection:start, rf:transmit]
+    required_locks: [pipeline:detection, usrp:n210_primary]
+    allowed_arguments: [profile_id, tx_gain_db, rx_gain_db, maximum_duration_seconds]
+    required_arguments: [profile_id, tx_gain_db, rx_gain_db, maximum_duration_seconds]
+    argument_rules:
+      profile_id: {type: string, pattern: "^[a-z][a-z0-9_]{1,63}$", max_length: 64}
+      tx_gain_db: {type: number, minimum: 0, maximum: 15}
+      rx_gain_db: {type: number, minimum: 0, maximum: 35}
+      maximum_duration_seconds: {type: integer, minimum: 1, maximum: 3600}
+    idempotent: false
+    minimum_approval: single_operator
+  pipeline.stop:
+    allowed_safety_classes: [operational, rf_transmission]
+    required_scopes: [detection:stop]
+    required_locks: [pipeline:detection]
+    allowed_arguments: [reason]
+    required_arguments: [reason]
+    argument_rules:
+      reason: {type: string, min_length: 10, max_length: 512}
+    idempotent: true
+    minimum_approval: confirmation
+  pipeline.emergency_stop:
+    allowed_safety_classes: [operational, rf_transmission]
+    required_scopes: [detection:emergency_stop]
+    required_locks: [pipeline:detection]
+    allowed_arguments: [reason]
+    required_arguments: [reason]
+    argument_rules:
+      reason: {type: string, min_length: 10, max_length: 512}
+    idempotent: true
+    minimum_approval: confirmation
+  data.capture_raw_iq:
+    allowed_safety_classes: [operational]
+    required_scopes: [data:capture_raw]
+    required_locks: [data:raw, pipeline:detection]
+    allowed_arguments: [session_id, activity_class, duration_seconds, note, occupancy, room]
+    required_arguments: [session_id, activity_class, duration_seconds, note, occupancy, room]
+    argument_rules:
+      session_id: {type: string, min_length: 3, max_length: 96}
+      activity_class: {type: string, enum: [walk, sit_stand, lie_down, fall, idle, empty_room], max_length: 32}
+      duration_seconds: {type: integer, minimum: 1, maximum: 600}
+      note: {type: string, min_length: 10, max_length: 512}
+      occupancy: {type: string, min_length: 3, max_length: 128}
+      room: {type: string, min_length: 3, max_length: 128}
+    idempotent: false
+    minimum_approval: single_operator
+  model.train_candidate:
+    allowed_safety_classes: [maintenance]
+    required_scopes: [model:train]
+    required_locks: [model:candidate]
+    allowed_arguments: [candidate_id, dataset_manifest, config_digest]
+    required_arguments: [candidate_id, dataset_manifest, config_digest]
+    argument_rules:
+      candidate_id: {type: string, pattern: "^[a-z0-9][a-z0-9._-]{2,63}$", max_length: 64}
+      dataset_manifest: {type: string, pattern: "^(?!/)(?!.*\\.\\./).+\\.json$", max_length: 256}
+      config_digest: {type: string, pattern: "^[a-f0-9]{64}$", max_length: 64, literal_only: true}
+    idempotent: false
+    minimum_approval: confirmation
+  model.evaluate_candidate:
+    allowed_safety_classes: [maintenance]
+    required_scopes: [model:evaluate]
+    required_locks: [model:candidate]
+    allowed_arguments: [candidate_id, dataset_manifest]
+    required_arguments: [candidate_id, dataset_manifest]
+    argument_rules:
+      candidate_id: {type: string, pattern: "^[a-z0-9][a-z0-9._-]{2,63}$", max_length: 64}
+      dataset_manifest: {type: string, pattern: "^(?!/)(?!.*\\.\\./).+\\.json$", max_length: 256}
+    idempotent: false
+    minimum_approval: confirmation
+  model.recalibrate_candidate:
+    allowed_safety_classes: [maintenance]
+    required_scopes: [model:recalibrate]
+    required_locks: [model:candidate]
+    allowed_arguments: [candidate_id]
+    required_arguments: [candidate_id]
+    argument_rules:
+      candidate_id: {type: string, pattern: "^[a-z0-9][a-z0-9._-]{2,63}$", max_length: 64}
+    idempotent: false
+    minimum_approval: confirmation
+  model.rollback:
+    allowed_safety_classes: [maintenance, clinical]
+    required_scopes: [model:rollback]
+    required_locks: [model:active]
+    allowed_arguments: [approved_model_digest, expected_active_digest, reason]
+    required_arguments: [approved_model_digest, expected_active_digest, reason]
+    argument_rules:
+      approved_model_digest: {type: string, pattern: "^[a-f0-9]{64}$", max_length: 64}
+      expected_active_digest: {type: string, pattern: "^[a-f0-9]{64}$", max_length: 64}
+      reason: {type: string, min_length: 10, max_length: 512}
+    idempotent: true
+    minimum_approval: single_operator
+  model.promote:
+    allowed_safety_classes: [maintenance]
+    required_scopes: [model:promote_approve]
+    required_locks: [model:active]
+    allowed_arguments: [model_id, expected_active_digest]
+    required_arguments: [model_id, expected_active_digest]
+    argument_rules:
+      model_id: {type: string, pattern: "^[a-z0-9][a-z0-9._-]{2,63}$", max_length: 64}
+      expected_active_digest: {type: string, pattern: "^[a-f0-9]{64}$", max_length: 64}
+    idempotent: false
+    minimum_approval: single_operator
+  rf.conducted_bounded_test:
+    allowed_safety_classes: [rf_transmission]
+    required_scopes: [rf:transmit]
+    required_locks: [usrp:n210_primary]
+    allowed_arguments: [signed_profile_digest, approval_digest, maximum_duration_seconds]
+    required_arguments: [signed_profile_digest, approval_digest, maximum_duration_seconds]
+    argument_rules:
+      signed_profile_digest: {type: string, pattern: "^[a-f0-9]{64}$", max_length: 64, literal_only: true}
+      approval_digest: {type: string, pattern: "^[a-f0-9]{64}$", max_length: 64, literal_only: true}
+      maximum_duration_seconds: {type: integer, minimum: 1, maximum: 300, literal_only: true}
+    idempotent: false
+    minimum_approval: single_operator

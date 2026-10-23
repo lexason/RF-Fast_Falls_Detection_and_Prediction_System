@@ -1,0 +1,149 @@
+options:
+  parameters:
+    author: CARAT
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: File-backed CW Doppler IQ source. Publishes over ZMQ PUB so every
+      downstream DSP/inference stage runs identically whether the source is
+      this replay flowgraph or the live USRP CW Doppler acquisition flowgraph.
+      Throttled to samp_rate so replay timing matches a live capture.
+    copyright: ''
+    description: Replay a recorded IQ session (SigMF-format .sigmf-data, raw
+      interleaved complex64) over ZMQ PUB for hardware-free downstream development.
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: no_gui
+    hier_block_src_path: '.:'
+    id: replay_source
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: CARAT Replay Source
+    window_size: (1000,1000)
+  states:
+    coordinate: [10, 10]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: iq_file
+  id: parameter
+  parameters:
+    comment: Path to a .sigmf-data file (raw interleaved complex64, little-endian)
+    label: IQ file path
+    short_id: ''
+    type: str
+    value: ''
+  states:
+    coordinate: [16, 116]
+    rotation: 0
+    state: enabled
+- name: samp_rate
+  id: parameter
+  parameters:
+    comment: Must match the session's recorded sample rate (see manifest.json)
+    label: Sample rate (sps)
+    short_id: ''
+    type: eng_float
+    value: '250000'
+  states:
+    coordinate: [16, 212]
+    rotation: 0
+    state: enabled
+- name: zmq_addr
+  id: parameter
+  parameters:
+    comment: ZMQ PUB bind address consumed by dsp/ services
+    label: ZMQ PUB address
+    short_id: ''
+    type: str
+    value: tcp://127.0.0.1:5555
+  states:
+    coordinate: [16, 308]
+    rotation: 0
+    state: enabled
+- name: repeat
+  id: parameter
+  parameters:
+    comment: 'True: loop the file (useful for soak-testing dsp/); False: play once'
+    label: Repeat file
+    short_id: ''
+    type: str
+    value: 'False'
+  states:
+    coordinate: [16, 404]
+    rotation: 0
+    state: enabled
+- name: blocks_file_source_0
+  id: blocks_file_source
+  parameters:
+    affinity: ''
+    alias: ''
+    begin_tag: pmt.PMT_NIL
+    comment: ''
+    file: iq_file
+    length: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    repeat: repeat
+    type: complex
+    vlen: '1'
+  states:
+    coordinate: [216, 148]
+    rotation: 0
+    state: enabled
+- name: blocks_throttle2_0
+  id: blocks_throttle2
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: Paces replay to real-time so downstream STFT/state-machine timing
+      behaves the same as a live capture
+    ignoretag: 'True'
+    limit: auto
+    maximum: '0.1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: samp_rate
+    type: complex
+    vlen: '1'
+  states:
+    coordinate: [432, 148]
+    rotation: 0
+    state: enabled
+- name: zeromq_pub_sink_0
+  id: zeromq_pub_sink
+  parameters:
+    address: zmq_addr
+    affinity: ''
+    alias: ''
+    bind: 'True'
+    comment: ''
+    drop_on_hwm: 'True'
+    hwm: '-1'
+    key: ''
+    pass_tags: 'False'
+    timeout: '100'
+    type: complex
+    vlen: '1'
+  states:
+    coordinate: [648, 148]
+    rotation: 0
+    state: enabled
+
+connections:
+- [blocks_file_source_0, '0', blocks_throttle2_0, '0']
+- [blocks_throttle2_0, '0', zeromq_pub_sink_0, '0']
+
+metadata:
+  file_format: 1
+  grc_version: 3.10.9.2

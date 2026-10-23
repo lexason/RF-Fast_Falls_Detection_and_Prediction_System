@@ -1,0 +1,121 @@
+handoff_id: "4f0b8bf4-af8a-48e8-a5fd-32d843c9523b"
+agent_id: "A00_MASTER_ORCHESTRATOR"
+timestamp_utc: "2026-08-07T04:44:56Z"
+task:
+  objective: "Execute the framework v1.1 Initial master-orchestrator task, create the minimum safe Phase 0/1 foundation, assess G0/G1/G1A, and stop where evidence or authority is absent."
+  scope: "/home/sdr-research/carat_research only; BUILD mode; final work offline and non-executable"
+inputs:
+  files:
+    - RF_SENSING_FALLS_MULTI_AGENT_FRAMEWORK_v1_1.md
+    - CLAUDE.md
+    - STATE.md
+    - RUNBOOK.md
+    - config/system.yaml
+    - config/probe.txt
+    - dashboard/app.py
+    - sdr/cw_doppler_tx_rx.py
+    - models/production/metadata.json
+    - tests/
+  data_versions: []
+  model_versions:
+    - "models/production legacy metadata; mutable and not approved"
+  assumptions:
+    - "Pre-existing dirty worktree changes belong to the user and were preserved."
+    - "RF Sensing Falls Project is an unapproved neutral working title and no acronym is approved."
+    - "Draft documents and offline tests are not runtime or gate-passage evidence."
+work_performed:
+  commands:
+    - git rev-parse HEAD
+    - git status --short --branch
+    - ".venv/bin/pytest -m 'not hw' -q"
+    - "OS Python UHD GNU Radio and network diagnostics"
+    - "N210 identity discovery and probe before the exclusive-ownership nonconformance was recognised"
+    - make validate-governance
+    - make test
+    - "make test-hardware (expected refusal exit 2)"
+    - "offline JSON Schema YAML CSV and cross-ledger validation"
+    - "git diff --check scoped away from the pre-existing CRLF log"
+  files_changed:
+    - AGENTS.md
+    - README.md
+    - .env.template
+    - Makefile
+    - configs/
+    - docs/agents/handoffs/
+    - docs/architecture/
+    - docs/clinical/
+    - docs/decisions/
+    - docs/evidence/
+    - docs/protocols/
+    - docs/regulatory/
+    - reports/validation/
+    - risk/
+    - schemas/
+    - tests/unit/
+    - tools/
+    - "logs/tx_log.csv: normal CARAT STOPPED record appended to an already modified user log"
+  analyses:
+    - "Full 3505-line framework review and instruction declaration"
+    - "Repository and host baseline"
+    - "G0 governance clinical ethics regulatory privacy and evidence gap analysis"
+    - "G1 N210 UBX-40 network RF inventory and safe-stop analysis"
+    - "G1A control-plane privilege telemetry model-lifecycle audit and threat analysis"
+    - "Independent A15 adversarial review correction and closure cycles"
+findings:
+  confirmed:
+    - "CARAT legacy continuous 5.8 GHz transmission used antennas documented for 2.4-2.5 GHz and lacked repository-linked approval/interlocks."
+    - "The CARAT RF and live processing pipeline was stopped and not restarted."
+    - "N210r4 and UBX-40 v2 electronic identity plus 1 Gb/s full-duplex link were observed; these facts do not pass G1."
+    - "The legacy model reports fall recall 0.170 with uncalibrated outputs and is not clinically ready."
+    - "The existing dashboard is unauthenticated read-only monitoring rather than a G1A control plane and showed an upstream-loss shutdown hang."
+    - "The final offline baseline passes 26 governance/schema/semantic tests; 3 hardware tests are deliberately deselected."
+    - "A15 independently accepted the non-executable documentation baseline after all adversarial findings were closed."
+  uncertain:
+    - "Approved research purpose, accountable sponsor, clinical partners, ethics determination, privacy owner, regulatory classification, and RF/EME approval."
+    - "Physical component inventory, attenuation, calibration, current exclusive N210 ownership, and reproducible v1.1 streaming/loopback evidence."
+  defects:
+    - "G0 approval and accountability evidence is absent."
+    - "G1 exclusive ownership, suitable hardware, conducted-loopback, signal-integrity, repeatability, and RF approval evidence is absent."
+    - "G1A runtime state, authentication/RBAC, privilege boundary, durable locks/audit/recovery, and integration evidence is absent."
+risks:
+  new:
+    - "Legacy RF start paths can bypass the proposed foundation because runtime interlocks are not implemented."
+    - "Human research, clinical reliance, privacy exposure, and unsupported claims remain prohibited by open controls."
+  changed:
+    - "Immediate CARAT transmission risk was reduced by stopping CARAT; no permission to restart is granted."
+    - "The documentation baseline now fails closed for Makefile hardware execution and rejects demonstrated workflow, recording, health, and traceability bypasses."
+evidence:
+  logs:
+    - logs/tx_log.csv
+    - docs/evidence/diagnostics/2026-08-07/
+  reports:
+    - reports/validation/2026-08-07_initial_gate_gap_report.md
+    - docs/agents/handoffs/2026-08-07_a01_a02_a12_g0.yaml
+    - docs/agents/handoffs/2026-08-07_a03_a04_g1.yaml
+    - docs/agents/handoffs/2026-08-07_a16_a17_g1a.yaml
+    - docs/agents/handoffs/2026-08-07_a15_red_team_closure.yaml
+  plots: []
+  checksums:
+    - artifacts/checksums/phase0_2026-08-07_sha256.txt
+decision:
+  status: CONDITIONAL
+  rationale: "The framework Initial task and non-executable Phase 0 foundation are complete and independently accepted, but G0, G1, and G1A all remain FAIL and prohibit progression into hardware, RF, human, clinical, or executable control-plane work."
+next_actions:
+  required:
+    - "Convene an offline G0 approval review and appoint accountable owners."
+    - "Obtain written institutional, clinical, privacy, regulatory, and RF/EME determinations before affected work."
+    - "Keep CARAT hardware and RF disabled until a separately authorised task proves exclusive ownership and every G1 precondition."
+    - "Keep the proposed action registry non-executable until G1A runtime enforcement and integration tests exist."
+  optional:
+    - "Continue synthetic replay, offline schema/control-plane simulation, and non-human analysis."
+reviewers_required:
+  - "Accountable Project Sponsor"
+  - A01
+  - A02
+  - A03
+  - A04
+  - A11
+  - A12
+  - A15
+  - A16
+  - A17

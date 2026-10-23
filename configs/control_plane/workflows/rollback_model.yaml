@@ -1,0 +1,36 @@
+api_version: v1
+id: rollback_model
+display_name: Roll back active model pointer
+version: 2
+safety_class: maintenance
+required_scopes: [model:rollback]
+approval_policy: {mode: single_operator, reason_required: true, reference_required: true, distinct_approvers: false, approval_ttl_seconds: 3600, minimum_deliberation_seconds: 120}
+allowed_environments: [DEVELOPMENT]
+allowed_source_states: [STOPPED, MAINTENANCE, FAILED]
+locks: [model:active]
+timeout_seconds: 60
+dry_run_supported: true
+idempotency: {scope: workflow_and_parameters, duplicate_behavior: return_existing}
+parameters:
+  approved_model_digest: {type: string, required: true, pattern: "^[a-f0-9]{64}$", min_length: 64, max_length: 64}
+  expected_active_digest: {type: string, required: true, pattern: "^[a-f0-9]{64}$", min_length: 64, max_length: 64}
+  reason: {type: string, required: true, min_length: 10, max_length: 512}
+steps:
+  - id: compare_and_swap_active_model
+    action: model.rollback
+    arguments:
+      approved_model_digest: {parameter_ref: approved_model_digest}
+      expected_active_digest: {parameter_ref: expected_active_digest}
+      reason: {parameter_ref: reason}
+    depends_on: []
+    timeout_seconds: 30
+    retry: {max_attempts: 2, backoff_seconds: 0.1}
+    cancellable: true
+    on_failure: fail
+postconditions:
+  - {subject: model.active_pointer_verified, operator: is_true, expected: true}
+rollback_not_safe_reason: Rollback is itself the compensation and preserves the prior pointer in immutable history.
+audit:
+  event_types: [workflow.requested, workflow.step.completed, workflow.completed, workflow.failed, workflow.approval.decided]
+  redact_fields: [authorization, token]
+  reason_field: reason

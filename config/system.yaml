@@ -1,0 +1,90 @@
+# CARAT system configuration. G0 hardware verification complete as of
+# 2026-07-18 -- see STATE.md for the full diagnostic chain (FPGA compat
+# mismatch, from-source rebuild, licensing, physical power cycle).
+
+usrp:
+  addr: 192.168.10.50
+  serial: "3253F7C"          # confirmed via uhd_usrp_probe
+  mboard: "N210r4"
+  fw_version: "12.4"
+  fpga_version: "11.1"       # confirmed 2026-07-18: probe succeeds, no compat mismatch
+  daughterboard: "UBX-40 v2" # confirmed 2026-07-18 via uhd_usrp_probe, same board on RX (0x007c) and TX (0x007b), serial 324DE2A rev 5
+  daughterboard_freq_range_hz: [10000000, 6000000000]
+  daughterboard_verified: true
+
+carrier:
+  f0_hz: 2462000000          # 2.462 GHz (ISM ch. 11). CHANGED 2026-09-12 from 5.8 GHz:
+                              # both installed DIGITECH antennas are rated 2.4-2.5 GHz
+                              # only (see antenna.frequency_mismatch_caveat below); the
+                              # 2026-08-07 reassessment
+                              # (reports/validation/2026-08-07_tailscale_n210_g3_reassessment.md)
+                              # blocked further 5.8 GHz OTA collection on that mismatch and
+                              # named a "separately reviewed 2.4 GHz configuration" as one
+                              # valid unblock. Researcher explicitly approved this tradeoff
+                              # (loses the 2.4 GHz/WiFi RF-isolation rationale the original
+                              # 5.8 GHz choice was made for -- see STATE.md decision log).
+                              # Re-verified via scripts/tone_antenna_test_separated.py at
+                              # 2.462 GHz, 0dB TX gain: PASS, SNR 87.0 dB.
+
+sample_rates:
+  capture_hz: 250000          # locked-in decision, CLAUDE.md §7
+  doppler_decimated_hz: 2000  # post-decimation rate for Doppler processing (G2)
+
+gains:
+  tx_gain_db: null   # start at minimum, raise incrementally once TX is authorized (Prime Directive 1)
+  rx_gain_db: null
+
+antenna:
+  tx_model: "DIGITECH 2.4GHz 5dBi omni, RP-SMA"   # swapped in 2026-07-18, replaces the earlier unbranded antenna
+  rx_model: "DIGITECH 2.4GHz 5dBi omni, RP-SMA"   # identical model, now on RF2 -- two-antenna TX/RX separation achieved
+  tx_port_antenna: "TX/RX"   # UHD antenna-name for usrp_sink.set_antenna() -- RF1
+  rx_port_antenna: "RX2"     # UHD antenna-name for usrp_source.set_antenna() -- RF2
+  geometry: "REPOSITIONED 2026-07-29 for G3 fall/lie-down data collection: both
+    antennas moved from the ~73cm bench to ~15-20cm off the floor, vertical
+    orientation preserved (unchanged from all prior sessions -- only height
+    changed, to isolate that variable). Rationale: a vertically-mounted omni
+    radiates a toroidal pattern with peak gain in its horizontal plane and a
+    null along its own axis: at 73cm that horizontal high-gain ring was aimed
+    at torso/chair height, well above a person on the floor, plausibly
+    explaining weak fall/lie-down Doppler returns relative to walk/sit-stand.
+    Still one antenna per port (RF1=TX/RX, RF2=RX2), still spatially separated
+    per CLAUDE.md §4's >=30cm guidance. Re-verified via
+    scripts/tone_antenna_test_separated.py at the new geometry: SNR=77.0dB,
+    tone detected within 98Hz of expected offset -- PASS, and slightly
+    *better* than the prior bench-height SNR (67.6dB), confirming the
+    reposition introduced no cabling/connector/leakage problems. This test
+    only validates the basic TX->RX link at close range; it does not by
+    itself prove improved sensitivity to a floor-level human target -- that's
+    what the upcoming fall/lie-down sessions at this geometry will show.
+    PRIOR geometry (bench height, 2026-07-18 through session 4): two antennas
+    on opposite ends of the bench via magnetic-base + 1.5m cables, ~73cm high,
+    confirmed via tone test at SNR 67.6dB."
+  height_re_verified: "2026-07-29T-tone-test, SNR=77.0dB PASS"
+  frequency_mismatch_caveat: "RESOLVED 2026-09-12: carrier moved to 2.462 GHz
+    (matches this antenna's 2.4-2.5 GHz rating -- see carrier.f0_hz comment).
+    Historical note, carrier was 5.8 GHz through 2026-08-07: same-antenna
+    loopback SNR 81.3 dB, separated-antenna direct-mount SNR 90.7 dB, separated-
+    antenna at real distance SNR 67.6 dB -- all strong on the CLOSE-RANGE bench
+    test despite the spec mismatch, but the 2026-08-07 reassessment concluded a
+    close-range tone test does not establish real-world sensitivity to weak
+    human-motion Doppler returns, and blocked further 5.8 GHz OTA collection on
+    that basis. New frequency-matched result: separated-antenna, 2.462 GHz, 0dB
+    TX gain -- PASS, SNR 87.0 dB. Real-world walking/fall Doppler sensitivity at
+    this new carrier is still unverified until actual motion sessions are run."
+
+network:
+  interface: enp128s31f6
+  mtu: 9000            # set 2026-07-17, confirmed via `ip link show`
+  rmem_max: 50000000
+  wmem_max: 50000000
+
+paths:
+  data_raw: data/raw
+  data_processed: data/processed
+  data_labels: data/labels
+  logs: logs
+  tx_log: logs/tx_log.csv
+
+ism_bands_hz:           # Prime Directive 1: TX carrier must fall inside one of these
+  - [2400000000, 2483500000]
+  - [5725000000, 5875000000]

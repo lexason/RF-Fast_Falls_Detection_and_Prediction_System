@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rf-sensing-falls.local/schemas/workflow_run.schema.json",
+  "title": "Durable workflow run",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run_id", "workflow_id", "workflow_version", "workflow_digest", "actor_id", "status", "parameters", "dry_run", "idempotency_key", "reason", "reference", "result", "error", "created_at_utc", "updated_at_utc", "steps", "approvals"],
+  "properties": {
+    "run_id": {"type": "string", "format": "uuid"},
+    "workflow_id": {"type": "string", "pattern": "^[a-z][a-z0-9_]{1,63}$"},
+    "workflow_version": {"type": "integer", "minimum": 1},
+    "workflow_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "actor_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{2,63}$"},
+    "status": {"enum": ["QUEUED", "AWAITING_APPROVAL", "RUNNING", "COMPLETED", "DRY_RUN_COMPLETED", "FAILED", "ROLLED_BACK", "CANCELLED"]},
+    "parameters": {"type": "object", "maxProperties": 64},
+    "dry_run": {"type": "boolean"},
+    "idempotency_key": {"type": "string", "minLength": 8, "maxLength": 128},
+    "reason": {"type": ["string", "null"], "maxLength": 512},
+    "reference": {"type": ["string", "null"], "maxLength": 128},
+    "result": {"type": ["object", "null"]},
+    "error": {"type": ["string", "null"], "maxLength": 2048},
+    "created_at_utc": {"type": "string", "format": "date-time"},
+    "updated_at_utc": {"type": "string", "format": "date-time"},
+    "steps": {"type": "array", "maxItems": 128, "items": {"type": "object"}},
+    "approvals": {"type": "array", "maxItems": 8, "items": {"type": "object"}},
+    "parameters_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "approval_mode": {"enum": ["none", "confirmation", "single_operator", "two_person"]},
+    "single_operator_approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["acknowledged_parameters_digest_required", "earliest_approval_at_utc", "deliberation_remaining_seconds"],
+      "properties": {
+        "acknowledged_parameters_digest_required": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "earliest_approval_at_utc": {"type": "string", "format": "date-time"},
+        "deliberation_remaining_seconds": {"type": "number", "minimum": 0}
+      }
+    }
+  }
+}

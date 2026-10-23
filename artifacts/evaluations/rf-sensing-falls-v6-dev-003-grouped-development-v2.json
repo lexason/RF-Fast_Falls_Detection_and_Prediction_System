@@ -1,0 +1,1169 @@
+{
+  "schema_version": "1.0",
+  "evaluation_id": "rf-sensing-falls-v6-dev-003-grouped-development",
+  "candidate_id": "rf-sensing-falls-v6-dev-003",
+  "candidate_bundle": {
+    "path": "/home/sdr-research/carat_research/models/candidates/rf-sensing-falls-v6-dev-003",
+    "metadata_sha256": "cf837d4c6d99a4549750c90026fba8a2e45833100da3600da6bfd2618cf6881b",
+    "artifact_sha256": {
+      "stage1_idle_walk_transient.onnx": "8e0fc96a320e86f24a01d68893fe6ef35b59e76613bd1c838621aad8b516f352",
+      "stage2_transient_subclass.onnx": "ecafd19279e67326403190dfe19eac0cbe0780b67a0a4001e25cc7a1d62f26e5"
+    }
+  },
+  "created_at_utc": "2026-08-07T07:08:38.346607+00:00",
+  "evaluator": {
+    "path": "models/evaluate_development.py",
+    "sha256": "49fe30497dd36d832ea75849b2800be9eef20a6fad10bf5351751255dc534358",
+    "xgboost_version": "3.3.0",
+    "numpy_version": "1.26.4",
+    "pandas_version": "3.0.1"
+  },
+  "status": "FAILED_ACCEPTANCE_CRITERIA",
+  "promotion_eligible": false,
+  "split": "leave-one-day-or-geometry-out; not participant/site/room independent",
+  "dataset": "/home/sdr-research/carat_research/data/processed/g3_features_v2_conflict_free.parquet",
+  "n_windows": 1825,
+  "n_falls": 30,
+  "fold_results": [
+    {
+      "held_out_day_or_geometry": "2026-07-25",
+      "n_train": 1372,
+      "n_test": 453,
+      "macro_f1": 0.3936676442754279
+    },
+    {
+      "held_out_day_or_geometry": "2026-07-27",
+      "n_train": 1376,
+      "n_test": 449,
+      "macro_f1": 0.574821460411603
+    },
+    {
+      "held_out_day_or_geometry": "2026-07-28",
+      "n_train": 1502,
+      "n_test": 323,
+      "macro_f1": 0.5195075088966526
+    },
+    {
+      "held_out_day_or_geometry": "2026-07-29",
+      "n_train": 1558,
+      "n_test": 267,
+      "macro_f1": 0.4949010896011848
+    },
+    {
+      "held_out_day_or_geometry": "2026-07-29-floor",
+      "n_train": 1492,
+      "n_test": 333,
+      "macro_f1": 0.5047129248620393
+    }
+  ],
+  "activity": {
+    "macro_f1": 0.5098092820086214,
+    "per_class_f1": {
+      "idle": 0.9426934097421203,
+      "walk": 0.9782350613375544,
+      "sit_down": 0.3302752293577982,
+      "stand_up": 0.4444444444444444,
+      "lie_down": 0.11320754716981132,
+      "fall": 0.25
+    },
+    "confusion_matrix": [
+      [
+        329,
+        19,
+        0,
+        1,
+        1,
+        0
+      ],
+      [
+        19,
+        1236,
+        0,
+        3,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        18,
+        25,
+        7,
+        1
+      ],
+      [
+        0,
+        8,
+        26,
+        46,
+        9,
+        15
+      ],
+      [
+        0,
+        5,
+        10,
+        10,
+        3,
+        3
+      ],
+      [
+        0,
+        0,
+        4,
+        18,
+        1,
+        7
+      ]
+    ],
+    "labels": [
+      "idle",
+      "walk",
+      "sit_down",
+      "stand_up",
+      "lie_down",
+      "fall"
+    ],
+    "target_macro_f1": 0.85,
+    "gate_passed": false
+  },
+  "fall_transient_subset": {
+    "n": 216,
+    "n_falls": 30,
+    "auroc": 0.5618279569892473,
+    "auprc": 0.24598021856352248,
+    "brier": 0.15541071629789785,
+    "ece_10_bins": 0.15359542031122442,
+    "threshold_090_recall_and_specificity_exists": false,
+    "balanced_development_point": {
+      "threshold": 0.02,
+      "recall": 0.5,
+      "specificity": 0.5806451612903226,
+      "ppv": 0.16129032258064516,
+      "tp": 15,
+      "fn": 15,
+      "fp": 78,
+      "tn": 108
+    },
+    "threshold_sweep": [
+      {
+        "threshold": 0.0,
+        "recall": 1.0,
+        "specificity": 0.0,
+        "ppv": 0.1388888888888889,
+        "tp": 30,
+        "fn": 0,
+        "fp": 186,
+        "tn": 0
+      },
+      {
+        "threshold": 0.01,
+        "recall": 0.6,
+        "specificity": 0.46236559139784944,
+        "ppv": 0.15254237288135594,
+        "tp": 18,
+        "fn": 12,
+        "fp": 100,
+        "tn": 86
+      },
+      {
+        "threshold": 0.02,
+        "recall": 0.5,
+        "specificity": 0.5806451612903226,
+        "ppv": 0.16129032258064516,
+        "tp": 15,
+        "fn": 15,
+        "fp": 78,
+        "tn": 108
+      },
+      {
+        "threshold": 0.03,
+        "recall": 0.43333333333333335,
+        "specificity": 0.6236559139784946,
+        "ppv": 0.1566265060240964,
+        "tp": 13,
+        "fn": 17,
+        "fp": 70,
+        "tn": 116
+      },
+      {
+        "threshold": 0.04,
+        "recall": 0.4,
+        "specificity": 0.6505376344086021,
+        "ppv": 0.15584415584415584,
+        "tp": 12,
+        "fn": 18,
+        "fp": 65,
+        "tn": 121
+      },
+      {
+        "threshold": 0.05,
+        "recall": 0.4,
+        "specificity": 0.6720430107526881,
+        "ppv": 0.1643835616438356,
+        "tp": 12,
+        "fn": 18,
+        "fp": 61,
+        "tn": 125
+      },
+      {
+        "threshold": 0.06,
+        "recall": 0.4,
+        "specificity": 0.6935483870967742,
+        "ppv": 0.17391304347826086,
+        "tp": 12,
+        "fn": 18,
+        "fp": 57,
+        "tn": 129
+      },
+      {
+        "threshold": 0.07,
+        "recall": 0.4,
+        "specificity": 0.7096774193548387,
+        "ppv": 0.18181818181818182,
+        "tp": 12,
+        "fn": 18,
+        "fp": 54,
+        "tn": 132
+      },
+      {
+        "threshold": 0.08,
+        "recall": 0.4,
+        "specificity": 0.7150537634408602,
+        "ppv": 0.18461538461538463,
+        "tp": 12,
+        "fn": 18,
+        "fp": 53,
+        "tn": 133
+      },
+      {
+        "threshold": 0.09,
+        "recall": 0.3333333333333333,
+        "specificity": 0.7258064516129032,
+        "ppv": 0.16393442622950818,
+        "tp": 10,
+        "fn": 20,
+        "fp": 51,
+        "tn": 135
+      },
+      {
+        "threshold": 0.1,
+        "recall": 0.3333333333333333,
+        "specificity": 0.7365591397849462,
+        "ppv": 0.1694915254237288,
+        "tp": 10,
+        "fn": 20,
+        "fp": 49,
+        "tn": 137
+      },
+      {
+        "threshold": 0.11,
+        "recall": 0.3,
+        "specificity": 0.7580645161290323,
+        "ppv": 0.16666666666666666,
+        "tp": 9,
+        "fn": 21,
+        "fp": 45,
+        "tn": 141
+      },
+      {
+        "threshold": 0.12,
+        "recall": 0.3,
+        "specificity": 0.7634408602150538,
+        "ppv": 0.16981132075471697,
+        "tp": 9,
+        "fn": 21,
+        "fp": 44,
+        "tn": 142
+      },
+      {
+        "threshold": 0.13,
+        "recall": 0.3,
+        "specificity": 0.7849462365591398,
+        "ppv": 0.1836734693877551,
+        "tp": 9,
+        "fn": 21,
+        "fp": 40,
+        "tn": 146
+      },
+      {
+        "threshold": 0.14,
+        "recall": 0.3,
+        "specificity": 0.8010752688172043,
+        "ppv": 0.1956521739130435,
+        "tp": 9,
+        "fn": 21,
+        "fp": 37,
+        "tn": 149
+      },
+      {
+        "threshold": 0.15,
+        "recall": 0.3,
+        "specificity": 0.8172043010752689,
+        "ppv": 0.20930232558139536,
+        "tp": 9,
+        "fn": 21,
+        "fp": 34,
+        "tn": 152
+      },
+      {
+        "threshold": 0.16,
+        "recall": 0.3,
+        "specificity": 0.8172043010752689,
+        "ppv": 0.20930232558139536,
+        "tp": 9,
+        "fn": 21,
+        "fp": 34,
+        "tn": 152
+      },
+      {
+        "threshold": 0.17,
+        "recall": 0.3,
+        "specificity": 0.8333333333333334,
+        "ppv": 0.225,
+        "tp": 9,
+        "fn": 21,
+        "fp": 31,
+        "tn": 155
+      },
+      {
+        "threshold": 0.18,
+        "recall": 0.3,
+        "specificity": 0.8333333333333334,
+        "ppv": 0.225,
+        "tp": 9,
+        "fn": 21,
+        "fp": 31,
+        "tn": 155
+      },
+      {
+        "threshold": 0.19,
+        "recall": 0.26666666666666666,
+        "specificity": 0.8387096774193549,
+        "ppv": 0.21052631578947367,
+        "tp": 8,
+        "fn": 22,
+        "fp": 30,
+        "tn": 156
+      },
+      {
+        "threshold": 0.2,
+        "recall": 0.26666666666666666,
+        "specificity": 0.8387096774193549,
+        "ppv": 0.21052631578947367,
+        "tp": 8,
+        "fn": 22,
+        "fp": 30,
+        "tn": 156
+      },
+      {
+        "threshold": 0.21,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8440860215053764,
+        "ppv": 0.19444444444444445,
+        "tp": 7,
+        "fn": 23,
+        "fp": 29,
+        "tn": 157
+      },
+      {
+        "threshold": 0.22,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8494623655913979,
+        "ppv": 0.2,
+        "tp": 7,
+        "fn": 23,
+        "fp": 28,
+        "tn": 158
+      },
+      {
+        "threshold": 0.23,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8548387096774194,
+        "ppv": 0.20588235294117646,
+        "tp": 7,
+        "fn": 23,
+        "fp": 27,
+        "tn": 159
+      },
+      {
+        "threshold": 0.24,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8602150537634409,
+        "ppv": 0.21212121212121213,
+        "tp": 7,
+        "fn": 23,
+        "fp": 26,
+        "tn": 160
+      },
+      {
+        "threshold": 0.25,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8602150537634409,
+        "ppv": 0.21212121212121213,
+        "tp": 7,
+        "fn": 23,
+        "fp": 26,
+        "tn": 160
+      },
+      {
+        "threshold": 0.26,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8602150537634409,
+        "ppv": 0.21212121212121213,
+        "tp": 7,
+        "fn": 23,
+        "fp": 26,
+        "tn": 160
+      },
+      {
+        "threshold": 0.27,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8655913978494624,
+        "ppv": 0.21875,
+        "tp": 7,
+        "fn": 23,
+        "fp": 25,
+        "tn": 161
+      },
+      {
+        "threshold": 0.28,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8655913978494624,
+        "ppv": 0.21875,
+        "tp": 7,
+        "fn": 23,
+        "fp": 25,
+        "tn": 161
+      },
+      {
+        "threshold": 0.29,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8655913978494624,
+        "ppv": 0.21875,
+        "tp": 7,
+        "fn": 23,
+        "fp": 25,
+        "tn": 161
+      },
+      {
+        "threshold": 0.3,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8655913978494624,
+        "ppv": 0.21875,
+        "tp": 7,
+        "fn": 23,
+        "fp": 25,
+        "tn": 161
+      },
+      {
+        "threshold": 0.31,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8655913978494624,
+        "ppv": 0.21875,
+        "tp": 7,
+        "fn": 23,
+        "fp": 25,
+        "tn": 161
+      },
+      {
+        "threshold": 0.32,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8709677419354839,
+        "ppv": 0.22580645161290322,
+        "tp": 7,
+        "fn": 23,
+        "fp": 24,
+        "tn": 162
+      },
+      {
+        "threshold": 0.33,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8709677419354839,
+        "ppv": 0.22580645161290322,
+        "tp": 7,
+        "fn": 23,
+        "fp": 24,
+        "tn": 162
+      },
+      {
+        "threshold": 0.34,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8709677419354839,
+        "ppv": 0.22580645161290322,
+        "tp": 7,
+        "fn": 23,
+        "fp": 24,
+        "tn": 162
+      },
+      {
+        "threshold": 0.35,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8763440860215054,
+        "ppv": 0.23333333333333334,
+        "tp": 7,
+        "fn": 23,
+        "fp": 23,
+        "tn": 163
+      },
+      {
+        "threshold": 0.36,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8763440860215054,
+        "ppv": 0.23333333333333334,
+        "tp": 7,
+        "fn": 23,
+        "fp": 23,
+        "tn": 163
+      },
+      {
+        "threshold": 0.37,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8763440860215054,
+        "ppv": 0.23333333333333334,
+        "tp": 7,
+        "fn": 23,
+        "fp": 23,
+        "tn": 163
+      },
+      {
+        "threshold": 0.38,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8817204301075269,
+        "ppv": 0.2413793103448276,
+        "tp": 7,
+        "fn": 23,
+        "fp": 22,
+        "tn": 164
+      },
+      {
+        "threshold": 0.39,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8870967741935484,
+        "ppv": 0.25,
+        "tp": 7,
+        "fn": 23,
+        "fp": 21,
+        "tn": 165
+      },
+      {
+        "threshold": 0.4,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8870967741935484,
+        "ppv": 0.25,
+        "tp": 7,
+        "fn": 23,
+        "fp": 21,
+        "tn": 165
+      },
+      {
+        "threshold": 0.41,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8870967741935484,
+        "ppv": 0.25,
+        "tp": 7,
+        "fn": 23,
+        "fp": 21,
+        "tn": 165
+      },
+      {
+        "threshold": 0.42,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8870967741935484,
+        "ppv": 0.25,
+        "tp": 7,
+        "fn": 23,
+        "fp": 21,
+        "tn": 165
+      },
+      {
+        "threshold": 0.43,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8924731182795699,
+        "ppv": 0.25925925925925924,
+        "tp": 7,
+        "fn": 23,
+        "fp": 20,
+        "tn": 166
+      },
+      {
+        "threshold": 0.44,
+        "recall": 0.23333333333333334,
+        "specificity": 0.8924731182795699,
+        "ppv": 0.25925925925925924,
+        "tp": 7,
+        "fn": 23,
+        "fp": 20,
+        "tn": 166
+      },
+      {
+        "threshold": 0.45,
+        "recall": 0.23333333333333334,
+        "specificity": 0.9032258064516129,
+        "ppv": 0.28,
+        "tp": 7,
+        "fn": 23,
+        "fp": 18,
+        "tn": 168
+      },
+      {
+        "threshold": 0.46,
+        "recall": 0.23333333333333334,
+        "specificity": 0.9032258064516129,
+        "ppv": 0.28,
+        "tp": 7,
+        "fn": 23,
+        "fp": 18,
+        "tn": 168
+      },
+      {
+        "threshold": 0.47,
+        "recall": 0.23333333333333334,
+        "specificity": 0.9032258064516129,
+        "ppv": 0.28,
+        "tp": 7,
+        "fn": 23,
+        "fp": 18,
+        "tn": 168
+      },
+      {
+        "threshold": 0.48,
+        "recall": 0.23333333333333334,
+        "specificity": 0.9032258064516129,
+        "ppv": 0.28,
+        "tp": 7,
+        "fn": 23,
+        "fp": 18,
+        "tn": 168
+      },
+      {
+        "threshold": 0.49,
+        "recall": 0.23333333333333334,
+        "specificity": 0.9032258064516129,
+        "ppv": 0.28,
+        "tp": 7,
+        "fn": 23,
+        "fp": 18,
+        "tn": 168
+      },
+      {
+        "threshold": 0.5,
+        "recall": 0.23333333333333334,
+        "specificity": 0.9032258064516129,
+        "ppv": 0.28,
+        "tp": 7,
+        "fn": 23,
+        "fp": 18,
+        "tn": 168
+      },
+      {
+        "threshold": 0.51,
+        "recall": 0.23333333333333334,
+        "specificity": 0.9032258064516129,
+        "ppv": 0.28,
+        "tp": 7,
+        "fn": 23,
+        "fp": 18,
+        "tn": 168
+      },
+      {
+        "threshold": 0.52,
+        "recall": 0.23333333333333334,
+        "specificity": 0.9086021505376344,
+        "ppv": 0.2916666666666667,
+        "tp": 7,
+        "fn": 23,
+        "fp": 17,
+        "tn": 169
+      },
+      {
+        "threshold": 0.53,
+        "recall": 0.23333333333333334,
+        "specificity": 0.9139784946236559,
+        "ppv": 0.30434782608695654,
+        "tp": 7,
+        "fn": 23,
+        "fp": 16,
+        "tn": 170
+      },
+      {
+        "threshold": 0.54,
+        "recall": 0.23333333333333334,
+        "specificity": 0.9139784946236559,
+        "ppv": 0.30434782608695654,
+        "tp": 7,
+        "fn": 23,
+        "fp": 16,
+        "tn": 170
+      },
+      {
+        "threshold": 0.55,
+        "recall": 0.23333333333333334,
+        "specificity": 0.9247311827956989,
+        "ppv": 0.3333333333333333,
+        "tp": 7,
+        "fn": 23,
+        "fp": 14,
+        "tn": 172
+      },
+      {
+        "threshold": 0.56,
+        "recall": 0.2,
+        "specificity": 0.9301075268817204,
+        "ppv": 0.3157894736842105,
+        "tp": 6,
+        "fn": 24,
+        "fp": 13,
+        "tn": 173
+      },
+      {
+        "threshold": 0.57,
+        "recall": 0.2,
+        "specificity": 0.9301075268817204,
+        "ppv": 0.3157894736842105,
+        "tp": 6,
+        "fn": 24,
+        "fp": 13,
+        "tn": 173
+      },
+      {
+        "threshold": 0.58,
+        "recall": 0.16666666666666666,
+        "specificity": 0.9301075268817204,
+        "ppv": 0.2777777777777778,
+        "tp": 5,
+        "fn": 25,
+        "fp": 13,
+        "tn": 173
+      },
+      {
+        "threshold": 0.59,
+        "recall": 0.16666666666666666,
+        "specificity": 0.9301075268817204,
+        "ppv": 0.2777777777777778,
+        "tp": 5,
+        "fn": 25,
+        "fp": 13,
+        "tn": 173
+      },
+      {
+        "threshold": 0.6,
+        "recall": 0.16666666666666666,
+        "specificity": 0.9354838709677419,
+        "ppv": 0.29411764705882354,
+        "tp": 5,
+        "fn": 25,
+        "fp": 12,
+        "tn": 174
+      },
+      {
+        "threshold": 0.61,
+        "recall": 0.16666666666666666,
+        "specificity": 0.9354838709677419,
+        "ppv": 0.29411764705882354,
+        "tp": 5,
+        "fn": 25,
+        "fp": 12,
+        "tn": 174
+      },
+      {
+        "threshold": 0.62,
+        "recall": 0.16666666666666666,
+        "specificity": 0.9354838709677419,
+        "ppv": 0.29411764705882354,
+        "tp": 5,
+        "fn": 25,
+        "fp": 12,
+        "tn": 174
+      },
+      {
+        "threshold": 0.63,
+        "recall": 0.16666666666666666,
+        "specificity": 0.9408602150537635,
+        "ppv": 0.3125,
+        "tp": 5,
+        "fn": 25,
+        "fp": 11,
+        "tn": 175
+      },
+      {
+        "threshold": 0.64,
+        "recall": 0.16666666666666666,
+        "specificity": 0.9408602150537635,
+        "ppv": 0.3125,
+        "tp": 5,
+        "fn": 25,
+        "fp": 11,
+        "tn": 175
+      },
+      {
+        "threshold": 0.65,
+        "recall": 0.16666666666666666,
+        "specificity": 0.9408602150537635,
+        "ppv": 0.3125,
+        "tp": 5,
+        "fn": 25,
+        "fp": 11,
+        "tn": 175
+      },
+      {
+        "threshold": 0.66,
+        "recall": 0.16666666666666666,
+        "specificity": 0.9408602150537635,
+        "ppv": 0.3125,
+        "tp": 5,
+        "fn": 25,
+        "fp": 11,
+        "tn": 175
+      },
+      {
+        "threshold": 0.67,
+        "recall": 0.16666666666666666,
+        "specificity": 0.946236559139785,
+        "ppv": 0.3333333333333333,
+        "tp": 5,
+        "fn": 25,
+        "fp": 10,
+        "tn": 176
+      },
+      {
+        "threshold": 0.68,
+        "recall": 0.16666666666666666,
+        "specificity": 0.946236559139785,
+        "ppv": 0.3333333333333333,
+        "tp": 5,
+        "fn": 25,
+        "fp": 10,
+        "tn": 176
+      },
+      {
+        "threshold": 0.69,
+        "recall": 0.16666666666666666,
+        "specificity": 0.9516129032258065,
+        "ppv": 0.35714285714285715,
+        "tp": 5,
+        "fn": 25,
+        "fp": 9,
+        "tn": 177
+      },
+      {
+        "threshold": 0.7,
+        "recall": 0.16666666666666666,
+        "specificity": 0.956989247311828,
+        "ppv": 0.38461538461538464,
+        "tp": 5,
+        "fn": 25,
+        "fp": 8,
+        "tn": 178
+      },
+      {
+        "threshold": 0.71,
+        "recall": 0.13333333333333333,
+        "specificity": 0.956989247311828,
+        "ppv": 0.3333333333333333,
+        "tp": 4,
+        "fn": 26,
+        "fp": 8,
+        "tn": 178
+      },
+      {
+        "threshold": 0.72,
+        "recall": 0.13333333333333333,
+        "specificity": 0.956989247311828,
+        "ppv": 0.3333333333333333,
+        "tp": 4,
+        "fn": 26,
+        "fp": 8,
+        "tn": 178
+      },
+      {
+        "threshold": 0.73,
+        "recall": 0.13333333333333333,
+        "specificity": 0.956989247311828,
+        "ppv": 0.3333333333333333,
+        "tp": 4,
+        "fn": 26,
+        "fp": 8,
+        "tn": 178
+      },
+      {
+        "threshold": 0.74,
+        "recall": 0.13333333333333333,
+        "specificity": 0.956989247311828,
+        "ppv": 0.3333333333333333,
+        "tp": 4,
+        "fn": 26,
+        "fp": 8,
+        "tn": 178
+      },
+      {
+        "threshold": 0.75,
+        "recall": 0.13333333333333333,
+        "specificity": 0.956989247311828,
+        "ppv": 0.3333333333333333,
+        "tp": 4,
+        "fn": 26,
+        "fp": 8,
+        "tn": 178
+      },
+      {
+        "threshold": 0.76,
+        "recall": 0.13333333333333333,
+        "specificity": 0.956989247311828,
+        "ppv": 0.3333333333333333,
+        "tp": 4,
+        "fn": 26,
+        "fp": 8,
+        "tn": 178
+      },
+      {
+        "threshold": 0.77,
+        "recall": 0.13333333333333333,
+        "specificity": 0.956989247311828,
+        "ppv": 0.3333333333333333,
+        "tp": 4,
+        "fn": 26,
+        "fp": 8,
+        "tn": 178
+      },
+      {
+        "threshold": 0.78,
+        "recall": 0.13333333333333333,
+        "specificity": 0.956989247311828,
+        "ppv": 0.3333333333333333,
+        "tp": 4,
+        "fn": 26,
+        "fp": 8,
+        "tn": 178
+      },
+      {
+        "threshold": 0.79,
+        "recall": 0.13333333333333333,
+        "specificity": 0.967741935483871,
+        "ppv": 0.4,
+        "tp": 4,
+        "fn": 26,
+        "fp": 6,
+        "tn": 180
+      },
+      {
+        "threshold": 0.8,
+        "recall": 0.13333333333333333,
+        "specificity": 0.967741935483871,
+        "ppv": 0.4,
+        "tp": 4,
+        "fn": 26,
+        "fp": 6,
+        "tn": 180
+      },
+      {
+        "threshold": 0.81,
+        "recall": 0.13333333333333333,
+        "specificity": 0.967741935483871,
+        "ppv": 0.4,
+        "tp": 4,
+        "fn": 26,
+        "fp": 6,
+        "tn": 180
+      },
+      {
+        "threshold": 0.82,
+        "recall": 0.13333333333333333,
+        "specificity": 0.967741935483871,
+        "ppv": 0.4,
+        "tp": 4,
+        "fn": 26,
+        "fp": 6,
+        "tn": 180
+      },
+      {
+        "threshold": 0.83,
+        "recall": 0.13333333333333333,
+        "specificity": 0.967741935483871,
+        "ppv": 0.4,
+        "tp": 4,
+        "fn": 26,
+        "fp": 6,
+        "tn": 180
+      },
+      {
+        "threshold": 0.84,
+        "recall": 0.13333333333333333,
+        "specificity": 0.967741935483871,
+        "ppv": 0.4,
+        "tp": 4,
+        "fn": 26,
+        "fp": 6,
+        "tn": 180
+      },
+      {
+        "threshold": 0.85,
+        "recall": 0.13333333333333333,
+        "specificity": 0.9731182795698925,
+        "ppv": 0.4444444444444444,
+        "tp": 4,
+        "fn": 26,
+        "fp": 5,
+        "tn": 181
+      },
+      {
+        "threshold": 0.86,
+        "recall": 0.1,
+        "specificity": 0.9731182795698925,
+        "ppv": 0.375,
+        "tp": 3,
+        "fn": 27,
+        "fp": 5,
+        "tn": 181
+      },
+      {
+        "threshold": 0.87,
+        "recall": 0.1,
+        "specificity": 0.9731182795698925,
+        "ppv": 0.375,
+        "tp": 3,
+        "fn": 27,
+        "fp": 5,
+        "tn": 181
+      },
+      {
+        "threshold": 0.88,
+        "recall": 0.1,
+        "specificity": 0.9731182795698925,
+        "ppv": 0.375,
+        "tp": 3,
+        "fn": 27,
+        "fp": 5,
+        "tn": 181
+      },
+      {
+        "threshold": 0.89,
+        "recall": 0.1,
+        "specificity": 0.9731182795698925,
+        "ppv": 0.375,
+        "tp": 3,
+        "fn": 27,
+        "fp": 5,
+        "tn": 181
+      },
+      {
+        "threshold": 0.9,
+        "recall": 0.1,
+        "specificity": 0.9731182795698925,
+        "ppv": 0.375,
+        "tp": 3,
+        "fn": 27,
+        "fp": 5,
+        "tn": 181
+      },
+      {
+        "threshold": 0.91,
+        "recall": 0.1,
+        "specificity": 0.978494623655914,
+        "ppv": 0.42857142857142855,
+        "tp": 3,
+        "fn": 27,
+        "fp": 4,
+        "tn": 182
+      },
+      {
+        "threshold": 0.92,
+        "recall": 0.1,
+        "specificity": 0.9838709677419355,
+        "ppv": 0.5,
+        "tp": 3,
+        "fn": 27,
+        "fp": 3,
+        "tn": 183
+      },
+      {
+        "threshold": 0.93,
+        "recall": 0.06666666666666667,
+        "specificity": 0.989247311827957,
+        "ppv": 0.5,
+        "tp": 2,
+        "fn": 28,
+        "fp": 2,
+        "tn": 184
+      },
+      {
+        "threshold": 0.94,
+        "recall": 0.06666666666666667,
+        "specificity": 0.9946236559139785,
+        "ppv": 0.6666666666666666,
+        "tp": 2,
+        "fn": 28,
+        "fp": 1,
+        "tn": 185
+      },
+      {
+        "threshold": 0.95,
+        "recall": 0.06666666666666667,
+        "specificity": 0.9946236559139785,
+        "ppv": 0.6666666666666666,
+        "tp": 2,
+        "fn": 28,
+        "fp": 1,
+        "tn": 185
+      },
+      {
+        "threshold": 0.96,
+        "recall": 0.03333333333333333,
+        "specificity": 0.9946236559139785,
+        "ppv": 0.5,
+        "tp": 1,
+        "fn": 29,
+        "fp": 1,
+        "tn": 185
+      },
+      {
+        "threshold": 0.97,
+        "recall": 0.03333333333333333,
+        "specificity": 0.9946236559139785,
+        "ppv": 0.5,
+        "tp": 1,
+        "fn": 29,
+        "fp": 1,
+        "tn": 185
+      },
+      {
+        "threshold": 0.98,
+        "recall": 0.03333333333333333,
+        "specificity": 1.0,
+        "ppv": 1.0,
+        "tp": 1,
+        "fn": 29,
+        "fp": 0,
+        "tn": 186
+      },
+      {
+        "threshold": 0.99,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "ppv": null,
+        "tp": 0,
+        "fn": 30,
+        "fp": 0,
+        "tn": 186
+      },
+      {
+        "threshold": 1.0,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "ppv": null,
+        "tp": 0,
+        "fn": 30,
+        "fp": 0,
+        "tn": 186
+      }
+    ]
+  },
+  "threshold_policy": null,
+  "performance_gate_passed": false,
+  "failure_reasons": [
+    "no participant, room, site, or final-test independence",
+    "single apparent researcher and one laboratory",
+    "only 30 retained legacy fall windows",
+    "threshold sweep is diagnostic and cannot calibrate deployment"
+  ]
+}

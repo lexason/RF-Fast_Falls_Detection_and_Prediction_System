@@ -1,0 +1,69 @@
+handoff_id: "46701f3d-87c2-4802-9c8b-cf98ae761a45"
+agent_id: "A15_RED_TEAM_AND_INDEPENDENT_AUDIT_AGENT"
+timestamp_utc: "2026-08-07T07:28:34Z"
+task:
+  objective: "Closing audit of the loss-gated, train/serve-parity offline POC."
+  scope: "Silent offline DEVELOPMENT POC only."
+inputs:
+  files:
+    - "artifacts/runs/20260807T072549.279872Z/run.json"
+    - "reports/validation/2026-08-07_offline_poc_remediation_report.md"
+    - "RUNBOOK.md"
+  data_versions:
+    - "2026-07-18_fall_gain5"
+  model_versions:
+    - "rf-sensing-falls-v3-legacy-baseline"
+  assumptions:
+    - "No alerting, clinical, promotion, RF, or generalisation claim is in scope."
+work_performed:
+  commands:
+    - "Verified all 18 recorded hashes and raw byte count independently."
+    - "make test"
+    - ".venv/bin/python -m tools.governance_validation cross-artifacts"
+    - "Independent chunked-versus-offline clutter/front-end parity check"
+    - "Repository-local POC listener check"
+  files_changed: []
+  analyses:
+    - "Loss-policy enforcement"
+    - "Exact frequency/timestamp and feature parity"
+    - "Run/report/source consistency"
+findings:
+  confirmed:
+    - "Replay and DSP input counts match exactly at 3,750,000 samples."
+    - "DSP processed 300 chunks and published the expected 295 frames."
+    - "invalid_chunks=0, invalid_frames=0, sequence_gaps=0, policy_passed=true."
+    - "All recorded source, dependency, configuration, model, evaluation, and input hashes match."
+    - "Chunked and offline clutter removal were byte-identical on an independent 750,000-sample check."
+    - "Training and serving share exact Doppler-bin centres and frame-centre timing."
+    - "47 offline tests passed; three hardware tests were deselected."
+    - "Governance validation passed and no POC listener remained."
+  uncertain:
+    - "Long-duration soak and remote/clinical operation remain unvalidated and out of scope."
+  defects: []
+risks:
+  new: []
+  changed:
+    - "Both previously reported A15 residual defects are closed."
+    - "Poor single-participant model evidence remains a G3 limitation, not an offline engineering defect."
+evidence:
+  logs:
+    - "47 passed, 3 deselected"
+    - "all 18 hashes, bytes, loss policy, and status: PASS"
+    - "raw front-end chunk/full parity: PASS"
+  reports:
+    - "reports/validation/2026-08-07_offline_poc_remediation_report.md"
+  plots: []
+  checksums:
+    - "run.json sha256:33e143d0dc5353ac2d58c4ca99824b06b4cd9d45e7dfe269fc7143c5f282a3eb"
+decision:
+  status: "PASS"
+  silent_offline_engineering_poc: "PASS"
+  remaining_offline_poc_blocker: "NONE"
+  framework_g3_fall_validation: "FAIL"
+  rationale: "No remaining defect blocks controlled silent offline testing or recalibration engineering. The model remains unsuitable for alerts, clinical use, promotion, or generalisation claims."
+next_actions:
+  required:
+    - "Keep outputs silent and promotion blocked."
+    - "Obtain independent G3 evidence before expanding intended use."
+  optional: []
+reviewers_required: []

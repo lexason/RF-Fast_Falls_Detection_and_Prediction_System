@@ -1,0 +1,242 @@
+{
+  "tag": "v5_loso_out_of_fold",
+  "model": "hierarchical two-stage (XGBoost+XGBoost), stage2 5-class incl. noise, on top of the 2026-08-02 event-segmentation fix",
+  "n_windows_total": 3520,
+  "classes": [
+    "idle",
+    "walk",
+    "sit_down",
+    "stand_up",
+    "lie_down",
+    "fall",
+    "noise"
+  ],
+  "fold_results": [
+    {
+      "held_out_day": "2026-07-25",
+      "n_train": 2644,
+      "n_test": 876,
+      "macro_f1": 0.3953334301159829
+    },
+    {
+      "held_out_day": "2026-07-27",
+      "n_train": 2762,
+      "n_test": 758,
+      "macro_f1": 0.4877918452499805
+    },
+    {
+      "held_out_day": "2026-07-28",
+      "n_train": 2901,
+      "n_test": 619,
+      "macro_f1": 0.4352080394013275
+    },
+    {
+      "held_out_day": "2026-07-29",
+      "n_train": 3073,
+      "n_test": 447,
+      "macro_f1": 0.4938621633756203
+    },
+    {
+      "held_out_day": "2026-07-29-floor",
+      "n_train": 2733,
+      "n_test": 787,
+      "macro_f1": 0.38152727981804485
+    },
+    {
+      "held_out_day": "2026-08-02",
+      "n_train": 3487,
+      "n_test": 33,
+      "macro_f1": 0.0
+    }
+  ],
+  "overall_macro_f1": 0.42269845864971656,
+  "per_class_f1": {
+    "idle": 0.8780096308186196,
+    "walk": 0.8163103721298496,
+    "sit_down": 0.37333333333333335,
+    "stand_up": 0.5228426395939086,
+    "lie_down": 0.1590909090909091,
+    "fall": 0.20930232558139536,
+    "noise": 0.0
+  },
+  "confusion_matrix": [
+    [
+      1641,
+      227,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      228,
+      1031,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      28,
+      42,
+      2,
+      6,
+      4
+    ],
+    [
+      0,
+      6,
+      25,
+      103,
+      12,
+      16,
+      15
+    ],
+    [
+      0,
+      3,
+      11,
+      22,
+      7,
+      5,
+      5
+    ],
+    [
+      0,
+      0,
+      3,
+      27,
+      7,
+      9,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      22,
+      7,
+      3,
+      0
+    ]
+  ],
+  "confusion_matrix_labels": [
+    "idle",
+    "walk",
+    "sit_down",
+    "stand_up",
+    "lie_down",
+    "fall",
+    "noise"
+  ],
+  "fall_threshold_sweep_out_of_fold": [
+    {
+      "threshold": 0.05,
+      "recall": 0.5531914893617021,
+      "specificity": 0.5217391304347826
+    },
+    {
+      "threshold": 0.1,
+      "recall": 0.3829787234042553,
+      "specificity": 0.6695652173913044
+    },
+    {
+      "threshold": 0.15000000000000002,
+      "recall": 0.3617021276595745,
+      "specificity": 0.744927536231884
+    },
+    {
+      "threshold": 0.2,
+      "recall": 0.2553191489361702,
+      "specificity": 0.808695652173913
+    },
+    {
+      "threshold": 0.25,
+      "recall": 0.2553191489361702,
+      "specificity": 0.855072463768116
+    },
+    {
+      "threshold": 0.3,
+      "recall": 0.2553191489361702,
+      "specificity": 0.8608695652173913
+    },
+    {
+      "threshold": 0.35000000000000003,
+      "recall": 0.2553191489361702,
+      "specificity": 0.8782608695652174
+    },
+    {
+      "threshold": 0.4,
+      "recall": 0.2127659574468085,
+      "specificity": 0.9014492753623189
+    },
+    {
+      "threshold": 0.45,
+      "recall": 0.19148936170212766,
+      "specificity": 0.9159420289855073
+    },
+    {
+      "threshold": 0.5,
+      "recall": 0.1702127659574468,
+      "specificity": 0.9304347826086956
+    },
+    {
+      "threshold": 0.55,
+      "recall": 0.1702127659574468,
+      "specificity": 0.9478260869565217
+    },
+    {
+      "threshold": 0.6000000000000001,
+      "recall": 0.1702127659574468,
+      "specificity": 0.9536231884057971
+    },
+    {
+      "threshold": 0.6500000000000001,
+      "recall": 0.14893617021276595,
+      "specificity": 0.9536231884057971
+    },
+    {
+      "threshold": 0.7000000000000001,
+      "recall": 0.14893617021276595,
+      "specificity": 0.9594202898550724
+    },
+    {
+      "threshold": 0.7500000000000001,
+      "recall": 0.0851063829787234,
+      "specificity": 0.9652173913043478
+    },
+    {
+      "threshold": 0.8,
+      "recall": 0.0851063829787234,
+      "specificity": 0.9710144927536232
+    },
+    {
+      "threshold": 0.8500000000000001,
+      "recall": 0.06382978723404255,
+      "specificity": 0.9710144927536232
+    },
+    {
+      "threshold": 0.9000000000000001,
+      "recall": 0.02127659574468085,
+      "specificity": 0.9855072463768116
+    },
+    {
+      "threshold": 0.9500000000000001,
+      "recall": 0.0,
+      "specificity": 0.9971014492753624
+    }
+  ],
+  "fall_threshold_clears_both_090": null,
+  "fall_threshold_balanced_operating_point": {
+    "threshold": 0.05,
+    "recall": 0.5531914893617021,
+    "specificity": 0.5217391304347826
+  },
+  "ac_macro_f1_target": 0.85,
+  "ac_macro_f1_pass": false,
+  "note": "fall_threshold_sweep_out_of_fold is genuinely held-out (each fold's p_fall computed by that fold's own models, never seeing that fold's labels during training) -- NOT the in-sample sweep reported earlier today, which is not trustworthy for calibration."
+}

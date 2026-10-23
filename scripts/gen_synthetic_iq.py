@@ -1,0 +1,180 @@
+#!/usr/bin/env python3
+"""Generate synthetic CW Doppler IQ sessions for hardware-free pipeline development.
+
+SYNTHETIC DATA ONLY. Stands in for real N210 captures while G0 hardware access
+is blocked on the FPGA compat mismatch (see STATE.md). This exercises the
+capture -> replay -> DSP plumbing and file formats end to end; it is NOT a
+physically validated radar simulator. Never report results derived from this
+data as accuracy/performance numbers for the real sensing system -- every
+session this script writes is tagged "synthetic": true in its manifest for
+exactly that reason.
+
+Baseband model (post-mix, matching what a real CW Doppler RX would record):
+  clutter   = near-DC leakage/static-reflector term + slow phase drift + AWGN
+  walking   = clutter + torso/limb micro-Doppler components, frequency and
+              amplitude modulated by a gait cadence, per the classic
+              sinusoidal limb-swing micro-Doppler pattern in the literature
+  sit/stand = clutter + a single decaying/rising chirp transient, then a
+              return to pure clutter -- per CLAUDE.md's own physics rule
+              (Doppler sees motion, not static posture: a still person is
+              invisible after clutter removal), so idle/seated/lying periods
+              in this synthetic data are deliberately just clutter, same as
+              empty-room.
+"""
+import argparse
+import json
+from pathlib import Path
+
+import numpy as np
+import sigmf
+from sigmf import SigMFFile
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
+def gen_clutter(n, fs, rng, amplitude=1.0):
+    phase_walk = np.cumsum(rng.normal(0, 2 * np.pi * 0.05 / fs, n))
+    clutter = amplitude * np.exp(1j * phase_walk)
+    noise = (rng.normal(0, 0.03, n) + 1j * rng.normal(0, 0.03, n))
+    return clutter + noise
+
+
+def gen_walking(n, fs, rng, cadence_hz=1.8, torso_dev_hz=40.0, limb_dev_hz=150.0):
+    t = np.arange(n) / fs
+    gait_phase = 2 * np.pi * cadence_hz * t
+    f_torso = torso_dev_hz * np.sin(gait_phase)
+    f_limb = limb_dev_hz * np.sin(gait_phase + np.pi / 6)
+    envelope = 0.5 + 0.5 * np.abs(np.sin(gait_phase / 2))
+
+    phase_torso = 2 * np.pi * np.cumsum(f_torso) / fs
+    phase_limb = 2 * np.pi * np.cumsum(f_limb) / fs
+
+    torso = 0.6 * np.exp(1j * phase_torso)
+    limb = 0.9 * envelope * np.exp(1j * phase_limb)
+    return torso + limb
+
+
+def gen_transient(n, fs, rng, f_start, f_end, peak_amplitude=1.4):
+    t = np.arange(n) / fs
+    duration = n / fs
+    freq_ramp = f_start + (f_end - f_start) * (t / duration)
+    phase = 2 * np.pi * np.cumsum(freq_ramp) / fs
+    envelope = np.sin(np.pi * t / duration) ** 0.5  # rises and falls within the transient
+    return peak_amplitude * envelope * np.exp(1j * phase)
+
+
+def build_session(segments, fs, rng):
+    """segments: list of (duration_s, label) -> (iq: complex64 array, labels: list of dict)"""
+    chunks = []
+    labels = []
+    t_cursor = 0.0
+    for duration_s, label in segments:
+        n = int(round(duration_s * fs))
+        if label in ("idle", "empty_room", "lie_down", "other"):
+            chunk = gen_clutter(n, fs, rng)
+        elif label == "walk":
+            chunk = gen_clutter(n, fs, rng, amplitude=0.5) + gen_walking(n, fs, rng)
+        elif label == "sit_down":
+            chunk = gen_clutter(n, fs, rng, amplitude=0.5) + gen_transient(n, fs, rng, f_start=-5, f_end=-90)
+        elif label == "stand_up":
+            chunk = gen_clutter(n, fs, rng, amplitude=0.5) + gen_transient(n, fs, rng, f_start=70, f_end=5)
+        else:
+            raise ValueError(f"unknown synthetic label: {label}")
+        chunks.append(chunk.astype(np.complex64))
+        labels.append({"t_start": round(t_cursor, 6), "t_end": round(t_cursor + duration_s, 6), "label": label})
+        t_cursor += duration_s
+    return np.concatenate(chunks), labels
+
+
+def write_session(session_id, iq, labels, fs, out_root, notes):
+    session_dir = out_root / "data" / "raw" / session_id
+    session_dir.mkdir(parents=True, exist_ok=True)
+    data_path = session_dir / f"{session_id}.sigmf-data"
+    iq.astype(np.complex64).tofile(data_path)
+
+    meta = SigMFFile(
+        data_file=data_path,
+        global_info={
+            sigmf.DATATYPE_KEY: "cf32_le",
+            sigmf.SAMPLE_RATE_KEY: fs,
+            sigmf.DESCRIPTION_KEY: notes["description"],
+            sigmf.AUTHOR_KEY: "carat-research (synthetic generator, not a real capture)",
+            "carat:synthetic": True,
+        },
+    )
+    meta.add_capture(0)
+    sample_idx = 0
+    for seg in labels:
+        n = int(round((seg["t_end"] - seg["t_start"]) * fs))
+        meta.add_annotation(sample_idx, n, metadata={sigmf.LABEL_KEY: seg["label"]})
+        sample_idx += n
+    meta.tofile(session_dir / f"{session_id}.sigmf-meta")
+
+    manifest = {
+        "session_id": session_id,
+        "synthetic": True,
+        "synthetic_warning": "Not a real N210 capture. Generated by scripts/gen_synthetic_iq.py "
+                              "while G0 hardware access was blocked (see STATE.md). Do not use "
+                              "for accuracy/performance claims about the real sensing system.",
+        "carrier_hz": None,
+        "carrier_note": "N/A (synthetic baseband). Real captures pending daughterboard "
+                         "identification (blocked, see STATE.md G0 entries).",
+        "sample_rate_hz": fs,
+        "tx_gain_db": None,
+        "rx_gain_db": None,
+        "antenna_geometry": None,
+        "occupancy": notes["occupancy"],
+        "scripted_activity_timeline": labels,
+        "room": "synthetic - N/A",
+    }
+    (session_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))
+
+    labels_dir = out_root / "data" / "labels"
+    labels_dir.mkdir(parents=True, exist_ok=True)
+    with open(labels_dir / f"{session_id}.jsonl", "w") as f:
+        for seg in labels:
+            f.write(json.dumps(seg) + "\n")
+
+    return session_dir
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--out-root", default=str(REPO_ROOT), help="workspace root (default: repo root)")
+    ap.add_argument("--fs", type=float, default=250000.0, help="sample rate, sps (default: 250 kS/s, matches locked-in capture rate)")
+    ap.add_argument("--seed", type=int, default=42)
+    args = ap.parse_args()
+
+    rng = np.random.default_rng(args.seed)
+    out_root = Path(args.out_root)
+
+    sessions = [
+        (
+            "2026-07-17_synthetic_empty_room",
+            [(15.0, "empty_room")],
+            {"description": "Synthetic empty-room reference session (clutter + noise only, no motion)",
+             "occupancy": "none"},
+        ),
+        (
+            "2026-07-17_synthetic_walking",
+            [(3.0, "idle"), (6.0, "walk"), (3.0, "idle"), (6.0, "walk"), (2.0, "idle")],
+            {"description": "Synthetic walking reference session (alternating idle/walk bouts)",
+             "occupancy": "single subject (synthetic)"},
+        ),
+        (
+            "2026-07-17_synthetic_sit_stand",
+            [(3.0, "idle"), (1.0, "sit_down"), (5.0, "idle"), (1.0, "stand_up"),
+             (3.0, "idle"), (1.0, "sit_down"), (5.0, "idle"), (1.0, "stand_up"), (2.0, "idle")],
+            {"description": "Synthetic sit-down/stand-up transition reference session",
+             "occupancy": "single subject (synthetic)"},
+        ),
+    ]
+
+    for session_id, segments, notes in sessions:
+        iq, labels = build_session(segments, args.fs, rng)
+        session_dir = write_session(session_id, iq, labels, args.fs, out_root, notes)
+        print(f"wrote {session_dir} ({len(iq)} samples, {len(iq) / args.fs:.1f}s)")
+
+
+if __name__ == "__main__":
+    main()

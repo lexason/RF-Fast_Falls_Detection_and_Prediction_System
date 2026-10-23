@@ -1,0 +1,83 @@
+handoff_id: "62bf2460-2a1b-4ee3-937f-f8b7bf62a627"
+agent_id: "A15_RED_TEAM_AND_INDEPENDENT_AUDIT_AGENT"
+timestamp_utc: "2026-08-07T04:36:25Z"
+task:
+  objective: "Independent offline re-review of the corrected Phase 0 foundation."
+  scope: "/home/sdr-research/carat_research only; no edits, hardware, RF, network, or external repositories"
+inputs:
+  files:
+    - Makefile
+    - configs/control_plane/action_registry.yaml
+    - schemas/
+    - tools/governance_validation.py
+    - tests/unit/test_phase0_governance.py
+    - docs/evidence/
+    - risk/
+    - reports/validation/
+  data_versions: []
+  model_versions: []
+  assumptions:
+    - "All reviewed changes are a non-executable offline foundation."
+work_performed:
+  commands:
+    - make validate-governance
+    - make test
+    - "former hardware-enabling flags plus make test-hardware"
+    - "in-memory adversarial schema and semantic-validator replay"
+    - "cross-ledger consistency and git diff checks"
+  files_changed: []
+  analyses:
+    - "Replayed every initial A15 exploit."
+    - "Tested new action-value and stale-health boundary cases."
+findings:
+  confirmed:
+    - "A15-P0-001, 003, 005, 006, 008, and 009 were closed."
+    - "The prior five schema exploits were rejected."
+  uncertain:
+    - "Runtime enforcement remains unimplemented and was not assessed."
+  defects:
+    - id: A15-RR-001
+      severity: HIGH
+      prior_finding: A15-P0-002
+      defect: "Action names were closed but per-action literal values remained untyped and unbounded."
+      demonstration: "RF digest values x/y and duration -999 passed semantic validation."
+      mandatory_correction: "Add typed bounded per-action argument rules and digest-bound approval/profile checks."
+    - id: A15-RR-002
+      severity: HIGH
+      prior_finding: A15-P0-004
+      defect: "A stale critical measurement could aggregate to HEALTHY."
+      mandatory_correction: "Calculate age and freshness and prohibit stale critical HEALTHY state."
+    - id: A15-RR-003
+      severity: MEDIUM
+      prior_finding: A15-P0-007
+      defect: "The hardware-target test parsed the help text rather than the target recipe."
+      mandatory_correction: "Anchor at the actual Make target and inspect its recipe."
+risks:
+  new:
+    - "Unbounded structured values could bypass a closed action name."
+    - "Stale critical health data could permit unsafe operational state."
+  changed:
+    - "The original critical schema bypasses were materially reduced but not yet fully closed."
+evidence:
+  logs:
+    - "make validate-governance: semantic cross-artifact PASS; 22 passed"
+    - "make test: 22 passed; 3 hardware tests deselected"
+    - "make test-hardware with former flags: refused with exit 2"
+  reports:
+    - reports/validation/2026-08-07_initial_gate_gap_report.md
+  plots: []
+  checksums: []
+decision:
+  status: CONDITIONAL
+  disposition: CONDITIONAL
+  rationale: "The corrected documentation baseline was materially stronger, but three validator/test defects remained mandatory before final checksum acceptance."
+next_actions:
+  required:
+    - "Correct A15-RR-001 through A15-RR-003."
+    - "Keep G0, G1, and G1A at FAIL."
+    - "Rerun independent A15 adversarial validation."
+  optional: []
+reviewers_required:
+  - A11
+  - A15
+  - A16

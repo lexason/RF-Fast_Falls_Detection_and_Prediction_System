@@ -1,0 +1,179 @@
+{
+  "sweep": [
+    {
+      "threshold": 0.005,
+      "recall": 0.8936170212765957,
+      "specificity": 0.4299418604651163,
+      "tp": 42,
+      "fn": 5,
+      "tn": 1479,
+      "fp": 1961
+    },
+    {
+      "threshold": 0.01,
+      "recall": 0.8723404255319149,
+      "specificity": 0.5648255813953489,
+      "tp": 41,
+      "fn": 6,
+      "tn": 1943,
+      "fp": 1497
+    },
+    {
+      "threshold": 0.015,
+      "recall": 0.8723404255319149,
+      "specificity": 0.6261627906976744,
+      "tp": 41,
+      "fn": 6,
+      "tn": 2154,
+      "fp": 1286
+    },
+    {
+      "threshold": 0.02,
+      "recall": 0.851063829787234,
+      "specificity": 0.6630813953488373,
+      "tp": 40,
+      "fn": 7,
+      "tn": 2281,
+      "fp": 1159
+    },
+    {
+      "threshold": 0.025,
+      "recall": 0.8297872340425532,
+      "specificity": 0.690406976744186,
+      "tp": 39,
+      "fn": 8,
+      "tn": 2375,
+      "fp": 1065
+    },
+    {
+      "threshold": 0.030000000000000002,
+      "recall": 0.8297872340425532,
+      "specificity": 0.7151162790697675,
+      "tp": 39,
+      "fn": 8,
+      "tn": 2460,
+      "fp": 980
+    },
+    {
+      "threshold": 0.034999999999999996,
+      "recall": 0.7872340425531915,
+      "specificity": 0.7386627906976744,
+      "tp": 37,
+      "fn": 10,
+      "tn": 2541,
+      "fp": 899
+    },
+    {
+      "threshold": 0.04,
+      "recall": 0.7659574468085106,
+      "specificity": 0.7561046511627907,
+      "tp": 36,
+      "fn": 11,
+      "tn": 2601,
+      "fp": 839
+    },
+    {
+      "threshold": 0.045,
+      "recall": 0.7659574468085106,
+      "specificity": 0.7781976744186047,
+      "tp": 36,
+      "fn": 11,
+      "tn": 2677,
+      "fp": 763
+    },
+    {
+      "threshold": 0.05,
+      "recall": 0.723404255319149,
+      "specificity": 0.7947674418604651,
+      "tp": 34,
+      "fn": 13,
+      "tn": 2734,
+      "fp": 706
+    },
+    {
+      "threshold": 0.1,
+      "recall": 0.6382978723404256,
+      "specificity": 0.8953488372093024,
+      "tp": 30,
+      "fn": 17,
+      "tn": 3080,
+      "fp": 360
+    },
+    {
+      "threshold": 0.15000000000000002,
+      "recall": 0.5319148936170213,
+      "specificity": 0.9200581395348837,
+      "tp": 25,
+      "fn": 22,
+      "tn": 3165,
+      "fp": 275
+    },
+    {
+      "threshold": 0.2,
+      "recall": 0.48936170212765956,
+      "specificity": 0.9392441860465116,
+      "tp": 23,
+      "fn": 24,
+      "tn": 3231,
+      "fp": 209
+    },
+    {
+      "threshold": 0.25,
+      "recall": 0.48936170212765956,
+      "specificity": 0.9494186046511628,
+      "tp": 23,
+      "fn": 24,
+      "tn": 3266,
+      "fp": 174
+    },
+    {
+      "threshold": 0.3,
+      "recall": 0.425531914893617,
+      "specificity": 0.9590116279069767,
+      "tp": 20,
+      "fn": 27,
+      "tn": 3299,
+      "fp": 141
+    },
+    {
+      "threshold": 0.35000000000000003,
+      "recall": 0.40425531914893614,
+      "specificity": 0.9654069767441861,
+      "tp": 19,
+      "fn": 28,
+      "tn": 3321,
+      "fp": 119
+    },
+    {
+      "threshold": 0.4,
+      "recall": 0.3404255319148936,
+      "specificity": 0.9729651162790698,
+      "tp": 16,
+      "fn": 31,
+      "tn": 3347,
+      "fp": 93
+    },
+    {
+      "threshold": 0.45,
+      "recall": 0.3191489361702128,
+      "specificity": 0.9770348837209303,
+      "tp": 15,
+      "fn": 32,
+      "tn": 3361,
+      "fp": 79
+    },
+    {
+      "threshold": 0.5,
+      "recall": 0.2765957446808511,
+      "specificity": 0.9813953488372092,
+      "tp": 13,
+      "fn": 34,
+      "tn": 3376,
+      "fp": 64
+    }
+  ],
+  "ac_target_recall": 0.9,
+  "ac_target_specificity": 0.9,
+  "both_targets_jointly_achievable": false,
+  "note": "No threshold achieves both AC targets simultaneously. Best balanced operating points: threshold~0.10 gives recall=0.638/specificity=0.895; threshold~0.15 gives recall=0.532/specificity=0.920. Reaching recall~0.90 requires threshold~0.005, at which specificity collapses to 0.430."
+}

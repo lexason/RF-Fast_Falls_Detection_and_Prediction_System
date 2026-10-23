@@ -1,0 +1,23 @@
+captured_local=2026-08-07T13:54:57+10:00
+uname=Linux sdr-research 6.17.0-1030-oem #30-Ubuntu SMP PREEMPT_DYNAMIC Thu Jul 16 15:01:53 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+os=Ubuntu 24.04.4 LTS
+python_system=Python 3.12.3
+python_venv=Python 3.12.3
+pip_venv=pip 24.0
+uhd_binary=/usr/local/bin/uhd_config_info
+uhd_active_version=UHD 4.9.0.HEAD-0-g006d7f76
+gnuradio_binary=/usr/local/bin/gnuradio-config-info
+gnuradio_version=3.10.9.2
+note=Distribution UHD 4.6 packages coexist with the active /usr/local UHD build; provenance review pending.
+
+commands:
+date --iso-8601=seconds
+uname -a
+lsb_release -a
+python --version
+.venv/bin/python --version
+.venv/bin/python -m pip --version
+command -v uhd_config_info
+uhd_config_info --version
+command -v gnuradio-config-info
+gnuradio-config-info --version

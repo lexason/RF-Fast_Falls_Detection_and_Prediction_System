@@ -1,0 +1,135 @@
+schema_version: "1.0"
+profile:
+  id: "n210_ubx40_phase1"
+  environment: "DEVELOPMENT"
+  state: "DISABLED"
+  mode: "receive_only"
+  owner: null
+  approved_configuration_hash: null
+
+hardware:
+  motherboard:
+    model: "N210r4"
+    serial: "3253F7C"
+    hardware_revision: "2577"
+    firmware_version: "12.4"
+    fpga_version: "11.1"
+    firmware_hash: null
+    fpga_image_hash: null
+    power_supply_inventory_id: null
+  daughterboard:
+    model: "UBX-40 v2"
+    serial: "324DE2A"
+    revision: 5
+    rx_id: "0x007c"
+    tx_id: "0x007b"
+    frequency_range_hz: [10000000, 6000000000]
+    instantaneous_bandwidth_hz: 40000000
+  gpsdo_present: false
+  clock_source: "internal"
+  time_source: "none"
+
+network:
+  interface: "enp128s31f6"
+  host_address: "192.168.10.1/24"
+  usrp_address: "192.168.10.50"
+  expected_speed_mbps: 1000
+  expected_duplex: "full"
+  observed_mtu: 1500
+  configured_legacy_mtu: 9000
+  exclusive_route_required: true
+
+rf_inventory:
+  tx_antenna:
+    inventory_id: null
+    description: "DIGITECH 2.4 GHz 5 dBi omni, RP-SMA"
+    rated_frequency_hz: [2400000000, 2500000000]
+    suitable_for_candidate_2g4_profile: "UNVERIFIED"
+    suitable_for_5g8: false
+  rx_antenna:
+    inventory_id: null
+    description: "DIGITECH 2.4 GHz 5 dBi omni, RP-SMA"
+    rated_frequency_hz: [2400000000, 2500000000]
+    suitable_for_candidate_2g4_profile: "UNVERIFIED"
+    suitable_for_5g8: false
+  cables: []
+  attenuator_chain:
+    status: "NOT_VERIFIED"
+    elements: []
+    total_nominal_attenuation_db: null
+    uncertainty_db: null
+    measured_attenuation_file: null
+    maximum_safe_rx_input_dbm: null
+    direct_cable_connection_prohibited: true
+
+candidate_rf_profile:
+  transmission_enabled: false
+  centre_frequency_hz: 2437000000
+  centre_frequency_status: "PROPOSED_ONLY"
+  sample_rate_sps: 20000000
+  occupied_bandwidth_hz: 18000000
+  waveform: "pilot_ofdm"
+  frame_rate_hz: 100
+  tx_gain_db: null
+  rx_gain_db: null
+  tx_port: "TX/RX"
+  rx_port: "RX2"
+  conducted_power_dbm: null
+  antenna_gain_dbi: null
+  cable_loss_db: null
+  calculated_eirp_dbm: null
+  duty_cycle_fraction: null
+
+approvals:
+  rf_transmission:
+    approved: false
+    acma_assessment_reference: null
+    arpansa_eme_reference: null
+    operating_location: null
+    approved_frequency_range_hz: null
+    maximum_occupied_bandwidth_hz: null
+    maximum_conducted_power_dbm: null
+    maximum_eirp_dbm: null
+    maximum_duty_cycle_fraction: null
+    approved_antenna_inventory_ids: []
+    approver: null
+    approved_at_utc: null
+    expires_at_utc: null
+  conducted_test:
+    approved: false
+    protocol_reference: null
+    attenuator_chain_inventory_ids: []
+    calculated_rx_input_worst_case_dbm: null
+    safety_margin_db: null
+    approver: null
+
+interlocks:
+  require_exclusive_usrp_owner: true
+  require_platform_state_stopped_before_probe: true
+  require_signed_profile_before_tx: true
+  require_unexpired_rf_approval_before_tx: true
+  require_frequency_rated_antenna_before_ota: true
+  require_verified_attenuator_chain_before_conducted_tx: true
+  prohibit_direct_tx_rx_cable: true
+  start_tx_gain_at_minimum: true
+  hardware_lock_id: "usrp:n210:3253F7C"
+
+observed_software:
+  captured_at_utc: "2026-08-07T03:55:00Z"
+  os: "Ubuntu 24.04.4 LTS"
+  python_version: "3.12.3"
+  uhd_active_version: "4.9.0.HEAD-0-g006d7f76"
+  gnuradio_version: "3.10.9.2"
+  mixed_uhd_installation_requires_review: true
+
+acceptance:
+  device_identity_matches_manifest: true
+  gige_verified: true
+  exclusive_device_ownership_verified: false
+  streaming_benchmark_passed_under_v1_1: false
+  conducted_loopback_passed_under_v1_1: false
+  no_adc_clipping: false
+  zero_unexplained_overflows: false
+  zero_unexplained_underflows: false
+  bounded_repeatability: false
+  rf_and_ota_approval_present: false

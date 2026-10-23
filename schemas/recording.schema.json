@@ -1,0 +1,304 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rf-sensing-falls.local/schemas/recording.schema.json",
+  "title": "RF sensing recording manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "recording_id",
+    "session_id",
+    "participant_id",
+    "site_id",
+    "room_id",
+    "started_at_utc",
+    "ended_at_utc",
+    "data_class",
+    "hardware",
+    "rf",
+    "environment",
+    "protocol",
+    "quality",
+    "files",
+    "checksums",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "recording_id": {"$ref": "#/$defs/uuid"},
+    "session_id": {"$ref": "#/$defs/uuid"},
+    "participant_id": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{2,63}$"}
+      ],
+      "description": "Coded research identifier only; never a direct identity."
+    },
+    "site_id": {"$ref": "#/$defs/codedId"},
+    "room_id": {"$ref": "#/$defs/codedId"},
+    "started_at_utc": {"type": "string", "format": "date-time"},
+    "ended_at_utc": {"type": "string", "format": "date-time"},
+    "data_class": {
+      "enum": ["bench", "synthetic", "healthy_adult_controlled", "older_adult_functional", "silent_observational", "prospective_clinical"]
+    },
+    "hardware": {"$ref": "#/$defs/hardware"},
+    "rf": {"$ref": "#/$defs/rf"},
+    "environment": {"$ref": "#/$defs/environment"},
+    "protocol": {"$ref": "#/$defs/protocol"},
+    "quality": {"$ref": "#/$defs/quality"},
+    "files": {"$ref": "#/$defs/files"},
+    "checksums": {"$ref": "#/$defs/checksums"},
+    "provenance": {"$ref": "#/$defs/provenance"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "data_class": {
+            "enum": ["healthy_adult_controlled", "older_adult_functional", "silent_observational", "prospective_clinical"]
+          }
+        },
+        "required": ["data_class"]
+      },
+      "then": {
+        "properties": {
+          "participant_id": {"$ref": "#/$defs/codedId"},
+          "protocol": {
+            "properties": {
+              "ethics_reference": {"type": "string", "minLength": 1},
+              "site_approval_reference": {"type": "string", "minLength": 1},
+              "consent_or_legal_authority_reference": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "protocol": {
+            "properties": {"activity_label": {"enum": ["near_fall", "fall_like"]}},
+            "required": ["activity_label"]
+          }
+        },
+        "required": ["protocol"]
+      },
+      "then": {
+        "properties": {
+          "protocol": {
+            "properties": {
+              "safety_supervisor_id": {"$ref": "#/$defs/codedId"},
+              "safety_protocol_reference": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+    "codedId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{1,63}$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "hardware": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platform", "device_inventory_id", "daughterboard", "uhd_version", "firmware_version", "fpga_version", "fpga_image_sha256"],
+      "properties": {
+        "platform": {"const": "N210"},
+        "device_inventory_id": {"$ref": "#/$defs/codedId"},
+        "daughterboard": {"const": "UBX-40"},
+        "uhd_version": {"type": "string", "minLength": 1, "maxLength": 128},
+        "firmware_version": {"type": "string", "minLength": 1, "maxLength": 64},
+        "fpga_version": {"type": "string", "minLength": 1, "maxLength": 64},
+        "fpga_image_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "rf": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "centre_frequency_hz",
+        "sample_rate_sps",
+        "occupied_bandwidth_hz",
+        "waveform",
+        "tx_enabled",
+        "tx_gain_db",
+        "rx_gain_db",
+        "tx_antenna_inventory_id",
+        "rx_antenna_inventory_id",
+        "tx_port",
+        "rx_port",
+        "geometry_file",
+        "rf_profile_id",
+        "rf_approval"
+      ],
+      "properties": {
+        "centre_frequency_hz": {"type": "number", "exclusiveMinimum": 0},
+        "sample_rate_sps": {"type": "number", "exclusiveMinimum": 0, "maximum": 25000000},
+        "occupied_bandwidth_hz": {"type": "number", "exclusiveMinimum": 0, "maximum": 20000000},
+        "waveform": {"enum": ["receive_only", "single_tone", "multitone", "pn", "zadoff_chu", "pilot_ofdm", "wifi_csi"]},
+        "tx_enabled": {"type": "boolean"},
+        "tx_gain_db": {"oneOf": [{"type": "null"}, {"type": "number", "minimum": 0, "maximum": 31.5}]},
+        "rx_gain_db": {"type": "number", "minimum": 0, "maximum": 37.5},
+        "tx_antenna_inventory_id": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/codedId"}]},
+        "rx_antenna_inventory_id": {"$ref": "#/$defs/codedId"},
+        "tx_port": {"enum": ["TX/RX", "CAL", "DISABLED"]},
+        "rx_port": {"enum": ["RX2", "TX/RX", "CAL"]},
+        "geometry_file": {"$ref": "#/$defs/relativePath"},
+        "rf_profile_id": {"$ref": "#/$defs/codedId"},
+        "rf_approval": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/rfApproval"}]}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"tx_enabled": {"const": true}}, "required": ["tx_enabled"]},
+          "then": {
+            "properties": {
+              "rf_approval": {"$ref": "#/$defs/rfApproval"},
+              "tx_antenna_inventory_id": {"$ref": "#/$defs/codedId"},
+              "tx_gain_db": {"type": "number"},
+              "tx_port": {"enum": ["TX/RX", "CAL"]},
+              "waveform": {"not": {"const": "receive_only"}}
+            }
+          },
+          "else": {
+            "properties": {
+              "waveform": {"const": "receive_only"},
+              "tx_gain_db": {"type": "null"},
+              "tx_antenna_inventory_id": {"type": "null"},
+              "tx_port": {"const": "DISABLED"},
+              "rf_approval": {"type": "null"}
+            }
+          }
+        }
+      ]
+    },
+    "rfApproval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "approval_id",
+        "approved_profile_sha256",
+        "approval_sha256",
+        "signature_file",
+        "approved_by",
+        "approved_at_utc",
+        "expires_at_utc"
+      ],
+      "properties": {
+        "approval_id": {"$ref": "#/$defs/codedId"},
+        "approved_profile_sha256": {"$ref": "#/$defs/sha256"},
+        "approval_sha256": {"$ref": "#/$defs/sha256"},
+        "signature_file": {"$ref": "#/$defs/relativePath"},
+        "approved_by": {"$ref": "#/$defs/codedId"},
+        "approved_at_utc": {"type": "string", "format": "date-time"},
+        "expires_at_utc": {"type": "string", "format": "date-time"}
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["room_layout_version", "wifi_channel_occupancy_file", "people_count", "known_movers"],
+      "properties": {
+        "room_layout_version": {"$ref": "#/$defs/codedId"},
+        "wifi_channel_occupancy_file": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/relativePath"}]},
+        "people_count": {"type": "integer", "minimum": 0, "maximum": 32},
+        "known_movers": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {"enum": ["participant", "researcher", "staff", "visitor", "pet", "fan", "curtain", "equipment", "unknown"]}
+        }
+      }
+    },
+    "protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocol_id",
+        "protocol_version",
+        "activity_label",
+        "trial_number",
+        "scripted",
+        "safety_supervisor_id",
+        "safety_protocol_reference",
+        "label_quality_tier",
+        "ethics_reference",
+        "site_approval_reference",
+        "consent_or_legal_authority_reference"
+      ],
+      "properties": {
+        "protocol_id": {"$ref": "#/$defs/codedId"},
+        "protocol_version": {"type": "string", "minLength": 1, "maxLength": 32},
+        "activity_label": {
+          "enum": ["walking", "standing", "sitting", "lying", "sit_to_stand", "stand_to_sit", "bed_exit", "chair_exit", "turning", "bending", "kneeling", "pick_up_object", "near_fall", "fall_like", "unknown", "not_observable", "bench", "no_motion"]
+        },
+        "trial_number": {"type": "integer", "minimum": 1},
+        "scripted": {"type": "boolean"},
+        "safety_supervisor_id": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/codedId"}]},
+        "safety_protocol_reference": {"oneOf": [{"type": "null"}, {"type": "string", "minLength": 1, "maxLength": 128}]},
+        "label_quality_tier": {"enum": [1, 2, 3, 4, 5]},
+        "ethics_reference": {"oneOf": [{"type": "null"}, {"type": "string", "minLength": 1, "maxLength": 128}]},
+        "site_approval_reference": {"oneOf": [{"type": "null"}, {"type": "string", "minLength": 1, "maxLength": 128}]},
+        "consent_or_legal_authority_reference": {"oneOf": [{"type": "null"}, {"type": "string", "minLength": 1, "maxLength": 128}]}
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rx_overflows", "tx_underflows", "late_commands", "sequence_discontinuities", "clipped_sample_fraction", "packet_or_frame_loss_fraction", "mean_snr_db", "quality_status"],
+      "properties": {
+        "rx_overflows": {"type": "integer", "minimum": 0},
+        "tx_underflows": {"type": "integer", "minimum": 0},
+        "late_commands": {"type": "integer", "minimum": 0},
+        "sequence_discontinuities": {"type": "integer", "minimum": 0},
+        "clipped_sample_fraction": {"type": "number", "minimum": 0, "maximum": 1},
+        "packet_or_frame_loss_fraction": {"type": "number", "minimum": 0, "maximum": 1},
+        "mean_snr_db": {"oneOf": [{"type": "null"}, {"type": "number"}]},
+        "quality_status": {"enum": ["valid", "degraded", "invalid", "unknown"]}
+      }
+    },
+    "files": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw_iq", "annotations", "manifest"],
+      "properties": {
+        "raw_iq": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/relativePath"}]},
+        "annotations": {"$ref": "#/$defs/relativePath"},
+        "manifest": {"$ref": "#/$defs/relativePath"},
+        "channel_estimates": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/relativePath"}]}
+      }
+    },
+    "checksums": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/$defs/sha256"},
+      "minProperties": 1,
+      "propertyNames": {"pattern": "^[a-z][a-z0-9_]{1,63}_sha256$"}
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository_commit", "config_sha256", "operator_id", "created_at_utc"],
+      "properties": {
+        "repository_commit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "config_sha256": {"$ref": "#/$defs/sha256"},
+        "operator_id": {"$ref": "#/$defs/codedId"},
+        "created_at_utc": {"type": "string", "format": "date-time"}
+      }
+    }
+  }
+}

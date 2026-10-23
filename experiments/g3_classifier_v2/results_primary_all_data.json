@@ -1,0 +1,186 @@
+{
+  "tag": "primary_all_data",
+  "model": "FMCWGaitNetCW (classifier v2)",
+  "n_windows_total": 3487,
+  "classes": [
+    "idle",
+    "walk",
+    "sit_down",
+    "stand_up",
+    "lie_down",
+    "fall"
+  ],
+  "fold_results": [
+    {
+      "held_out_day": "2026-07-25",
+      "n_train": 2220,
+      "n_val": 391,
+      "n_test": 876,
+      "best_val_macro_f1": 0.5871393142898519,
+      "macro_f1": 0.496370679513596
+    },
+    {
+      "held_out_day": "2026-07-27",
+      "n_train": 2320,
+      "n_val": 409,
+      "n_test": 758,
+      "best_val_macro_f1": 0.5719757363741352,
+      "macro_f1": 0.4877874620222258
+    },
+    {
+      "held_out_day": "2026-07-28",
+      "n_train": 2438,
+      "n_val": 430,
+      "n_test": 619,
+      "best_val_macro_f1": 0.6287515262515262,
+      "macro_f1": 0.38008926798672005
+    },
+    {
+      "held_out_day": "2026-07-29",
+      "n_train": 2584,
+      "n_val": 456,
+      "n_test": 447,
+      "best_val_macro_f1": 0.49658995974785447,
+      "macro_f1": 0.4211794063568965
+    },
+    {
+      "held_out_day": "2026-07-29-floor",
+      "n_train": 2295,
+      "n_val": 405,
+      "n_test": 787,
+      "best_val_macro_f1": 0.594810878683088,
+      "macro_f1": 0.5075856219455218
+    }
+  ],
+  "overall_macro_f1": 0.49315281433554664,
+  "per_class_f1": {
+    "idle": 0.9270946681175191,
+    "walk": 0.9208860759493671,
+    "sit_down": 0.49557522123893805,
+    "stand_up": 0.16,
+    "lie_down": 0.18803418803418803,
+    "fall": 0.26732673267326734
+  },
+  "confusion_matrix": [
+    [
+      1704,
+      73,
+      21,
+      8,
+      31,
+      32
+    ],
+    [
+      69,
+      1164,
+      1,
+      2,
+      5,
+      18
+    ],
+    [
+      6,
+      0,
+      56,
+      12,
+      1,
+      7
+    ],
+    [
+      14,
+      15,
+      61,
+      18,
+      15,
+      54
+    ],
+    [
+      7,
+      10,
+      3,
+      5,
+      11,
+      17
+    ],
+    [
+      7,
+      7,
+      2,
+      3,
+      1,
+      27
+    ]
+  ],
+  "confusion_matrix_labels": [
+    "idle",
+    "walk",
+    "sit_down",
+    "stand_up",
+    "lie_down",
+    "fall"
+  ],
+  "fall_recall": 0.574468085106383,
+  "fall_specificity": 0.9627906976744186,
+  "fall_confusion": {
+    "tp": 27,
+    "fn": 20,
+    "tn": 3312,
+    "fp": 128
+  },
+  "classification_report": {
+    "idle": {
+      "precision": 0.9429994465965689,
+      "recall": 0.9117174959871589,
+      "f1-score": 0.9270946681175191,
+      "support": 1869.0
+    },
+    "walk": {
+      "precision": 0.91725768321513,
+      "recall": 0.9245432883240667,
+      "f1-score": 0.9208860759493671,
+      "support": 1259.0
+    },
+    "sit_down": {
+      "precision": 0.3888888888888889,
+      "recall": 0.6829268292682927,
+      "f1-score": 0.49557522123893805,
+      "support": 82.0
+    },
+    "stand_up": {
+      "precision": 0.375,
+      "recall": 0.1016949152542373,
+      "f1-score": 0.16,
+      "support": 177.0
+    },
+    "lie_down": {
+      "precision": 0.171875,
+      "recall": 0.20754716981132076,
+      "f1-score": 0.18803418803418803,
+      "support": 53.0
+    },
+    "fall": {
+      "precision": 0.17419354838709677,
+      "recall": 0.574468085106383,
+      "f1-score": 0.26732673267326734,
+      "support": 47.0
+    },
+    "accuracy": 0.8546028104387726,
+    "macro avg": {
+      "precision": 0.4950357611812808,
+      "recall": 0.5671496306252433,
+      "f1-score": 0.49315281433554664,
+      "support": 3487.0
+    },
+    "weighted avg": {
+      "precision": 0.8697601805333863,
+      "recall": 0.8546028104387726,
+      "f1-score": 0.8556417668124305,
+      "support": 3487.0
+    }
+  },
+  "ac_macro_f1_target": 0.85,
+  "ac_macro_f1_pass": false,
+  "ac_fall_recall_target": 0.9,
+  "ac_fall_specificity_target": 0.9,
+  "ac_fall_pass": false
+}

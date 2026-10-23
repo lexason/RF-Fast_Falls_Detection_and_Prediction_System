@@ -1,0 +1,43 @@
+api_version: v1
+id: capture_raw_iq
+display_name: Capture immutable raw-IQ session
+version: 1
+safety_class: operational
+required_scopes: [data:capture_raw]
+approval_policy: {mode: single_operator, reason_required: true, reference_required: true, distinct_approvers: false, approval_ttl_seconds: 3600, minimum_deliberation_seconds: 60}
+allowed_environments: [DEVELOPMENT]
+allowed_source_states: [RUNNING, DEGRADED]
+locks: [data:raw, pipeline:detection]
+timeout_seconds: 660
+dry_run_supported: true
+idempotency: {scope: workflow_and_parameters, duplicate_behavior: reject}
+parameters:
+  session_id: {type: string, required: true, pattern: "^[A-Za-z0-9][A-Za-z0-9._-]{2,95}$", min_length: 3, max_length: 96}
+  activity_class: {type: string, required: true, enum: [walk, sit_stand, lie_down, fall, idle, empty_room], max_length: 32}
+  duration_seconds: {type: integer, required: true, minimum: 1, maximum: 600}
+  note: {type: string, required: true, min_length: 10, max_length: 512}
+  occupancy: {type: string, required: true, min_length: 3, max_length: 128}
+  room: {type: string, required: true, min_length: 3, max_length: 128}
+steps:
+  - id: capture_bounded_session
+    action: data.capture_raw_iq
+    arguments:
+      session_id: {parameter_ref: session_id}
+      activity_class: {parameter_ref: activity_class}
+      duration_seconds: {parameter_ref: duration_seconds}
+      note: {parameter_ref: note}
+      occupancy: {parameter_ref: occupancy}
+      room: {parameter_ref: room}
+    depends_on: []
+    timeout_seconds: 630
+    retry: {max_attempts: 1, backoff_seconds: 0}
+    cancellable: true
+    on_failure: fail
+postconditions:
+  - {subject: data.raw_session_immutable, operator: is_true, expected: true}
+rollback_not_safe_reason: A completed immutable recording is retained; failed partial output is quarantined rather than deleted.
+audit:
+  event_types: [workflow.requested, workflow.step.completed, workflow.completed, workflow.failed, workflow.approval.decided]
+  redact_fields: [authorization, token, participant_id]
+  reason_field: reason
+

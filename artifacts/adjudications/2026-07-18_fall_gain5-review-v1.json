@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "adjudication_id": "2026-07-18_fall_gain5-review-v1",
+  "session_id": "2026-07-18_fall_gain5",
+  "status": "PROVISIONAL_QUARANTINED",
+  "reviewed_at_utc": "2026-08-07T08:15:00Z",
+  "permitted_use": "development_error_analysis_only",
+  "prohibited_uses": [
+    "training",
+    "model_selection",
+    "threshold_selection",
+    "calibration",
+    "final_testing",
+    "validated_performance_claims"
+  ],
+  "documented_episode_count": 1,
+  "source_automatic_fragment_count": 2,
+  "independent_fall_count": null,
+  "review_findings": [
+    "The capture log and contemporaneous STATE record describe one researcher self-test and one uncontrolled pilot fall sample.",
+    "The automatic label file contains two nearby motion fragments, both stamped fall, but supplies no independent human adjudication for two separate falls.",
+    "The fragments have opposite Doppler direction signs and their centered three-second analysis windows overlap, consistent with phases of one episode or fall/recovery rather than two independent falls.",
+    "Class truth for each fragment remains unresolved; neither fragment may be used to manufacture a detection success criterion."
+  ],
+  "source_hashes": {
+    "manifest_sha256": "fc8b2aea240e0c4eaf2a551b5db87ac62b76b383ed23c0e5f99f21ac7fe79f22",
+    "labels_sha256": "6a99e79e8954ffdec66e8cd3090dda24be8044207fc9c1f0700bdb2219dfad7b",
+    "sigmf_meta_sha256": "e40434de30bc44d97bbdf0a0c7506d8667401229d4c432dbd5852e79fb249af8",
+    "sigmf_data_sha256": "32bcd7bb0b1e6a9880ecb167d3e95ee7f8711c518d420d4b8a3d63d844fdddef",
+    "sigmf_data_sha512": "30bfc1304dc10cd274503bcca89306753c7d80166c74093e4bf98f0ae735086e170a1db98cc1cddd589616cd56721559f9400a2c799793e415b47e535d6a61db"
+  },
+  "evidence": [
+    "STATE.md:237-241",
+    "logs/tx_log.csv:30-31",
+    "data/raw/2026-07-18_fall_gain5/manifest.json",
+    "data/labels/2026-07-18_fall_gain5.jsonl"
+  ],
+  "resolution_required": "Independent source-grounded human adjudication or a new protocol-controlled recording with episode and phase annotations."
+}

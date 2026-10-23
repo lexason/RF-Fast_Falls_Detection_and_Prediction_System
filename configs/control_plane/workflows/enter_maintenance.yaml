@@ -1,0 +1,34 @@
+api_version: v1
+id: enter_maintenance
+display_name: Enter simulation maintenance
+version: 1
+safety_class: maintenance
+required_scopes: [detection:read, maintenance:execute]
+approval_policy: {mode: confirmation, reason_required: true, reference_required: false, distinct_approvers: false, approval_ttl_seconds: 0}
+allowed_environments: [DEVELOPMENT]
+allowed_source_states: [STOPPED, FAILED]
+locks: [pipeline:preflight]
+timeout_seconds: 30
+dry_run_supported: true
+idempotency: {scope: workflow, duplicate_behavior: return_existing}
+parameters: {}
+steps:
+  - id: enter_maintenance
+    action: state.reconcile
+    arguments: {target: {literal: MAINTENANCE}}
+    depends_on: []
+    timeout_seconds: 10
+    retry: {max_attempts: 2, backoff_seconds: 0.1}
+    cancellable: true
+    on_failure: rollback
+postconditions:
+  - {subject: platform.state, operator: eq, expected: MAINTENANCE}
+rollback:
+  - action: state.reconcile
+    arguments: {target: {literal: STOPPED}}
+    timeout_seconds: 10
+audit:
+  event_types: [workflow.requested, workflow.step.completed, workflow.completed, workflow.failed]
+  redact_fields: [authorization, token]
+  reason_field: reason
+

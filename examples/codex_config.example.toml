@@ -1,0 +1,9 @@
+# Example current Codex configuration fragment, verified against official docs on 2026-08-19.
+# Merge only after inspecting your installed Codex version and existing policy.
+
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 3

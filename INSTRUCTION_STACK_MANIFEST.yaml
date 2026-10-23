@@ -1,0 +1,22 @@
+stack:
+  name: CARAT Harmonized Agent Framework
+  version: "1.1"
+  date: "2026-08-19"
+  status: canonical-candidate
+  policy_authority:
+    - RF_SENSING_FALLS_MULTI_AGENT_FRAMEWORK_v1_4.md
+    - CARAT_CODEX_CLAUDE_HYBRID_ENGINEERING_FRAMEWORK_v1_1.md
+  adapters:
+    - AGENTS.md
+    - CLAUDE.md
+    - CODEX.md
+  operations:
+    - RUNBOOK_AGENT_OPERATIONS.md
+  validation:
+    - tools/validate_instruction_stack.py
+principles:
+  - "Backend identity does not imply execution environment or capability."
+  - "R2-material/R3 changes cannot self-certify."
+  - "R4 actions require explicit human approval."
+  - "Deterministic tools are first-class executors/validators."
+  - "Mutable operational truth does not live in root vendor adapters."

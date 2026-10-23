@@ -1,0 +1,11 @@
+project:
+  display_name: "RF Sensing Falls Project"
+  slug: "rf-sensing-falls"
+  python_package: "rf_sensing_falls"
+  acronym: null
+  acronym_expansion: null
+  naming_status: "working-title"
+  approved_by: null
+  approved_at: null
+  active_environment: "DEVELOPMENT"
+  governing_framework: "RF_SENSING_FALLS_MULTI_AGENT_FRAMEWORK_v1_4.md"

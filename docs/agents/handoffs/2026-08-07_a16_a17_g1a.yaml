@@ -1,0 +1,88 @@
+handoff_id: "03615050-dbbd-4418-b8cf-446c0c28ee75"
+agent_id: "A16_OPERATIONS_CONTROL_PLANE+A17_CONVERSATIONAL_ORCHESTRATION"
+timestamp_utc: "2026-08-07T03:59:09Z"
+task:
+  objective: "Read-only CARAT G1A control-plane, telemetry, workflow, privilege, audit, chat, and terminal assessment."
+  scope: "/home/sdr-research/carat_research only; sister-project implementation and operation excluded"
+inputs:
+  files:
+    - "RF_SENSING_FALLS_MULTI_AGENT_FRAMEWORK_v1_1.md"
+    - "dashboard/app.py"
+    - "RUNBOOK.md"
+    - "config/system.yaml"
+    - "sdr/cw_doppler_tx_rx.py"
+    - "models/train_production.py"
+    - "models/production/metadata.json"
+    - "tests/"
+  data_versions: []
+  model_versions:
+    - "models/production legacy mutable path"
+    - "models/production_v4 and production_v5 manually staged"
+  assumptions:
+    - "Documentation is not implementation evidence."
+    - "No sister-project code, configuration, or control is in scope."
+work_performed:
+  commands:
+    - "Read all 3505 framework lines."
+    - "Mapped CARAT FastAPI routes, WebSocket handlers, process lifecycle, logs, model paths, tests, service supervision, and privilege assumptions."
+  files_changed: []
+  analyses:
+    - "Mapped every G1A evidence and acceptance criterion."
+findings:
+  confirmed:
+    - "The legacy FastAPI application is a read-only research UI, not an operations control plane."
+    - "No authentication, RBAC, platform state, workflow engine/schema, durable locks, approval system, audit store, helper boundary, health contract, or G1A test suite existed."
+    - "CARAT lifecycle uses manual processes rather than supervised, reconcilable units."
+    - "The API identity is not a suitable future least-privilege boundary."
+    - "Operational logs are mutable and incomplete for workflow audit."
+    - "Legacy training can write the active model directory directly."
+    - "The UI directly interpolates manifest/session values into HTML."
+    - "N210 CPU, RAM, process list, and filesystem telemetry are unavailable by hardware design."
+    - "CARAT dashboard WebSocket tasks blocked shutdown after upstream loss and required termination after the listener closed."
+  uncertain:
+    - "Immediate deployment stack choices for durable database, broker, and workflow worker."
+    - "Future host-wide hardware ownership mechanism, which requires separately authorised coordination."
+  defects:
+    - "G1A-D01 critical: CARAT has no enforced single-owner N210 lock or RF start interlock."
+    - "G1A-D02 critical: platform state, workflows, locks, idempotency, rollback, and recovery absent."
+    - "G1A-D03 high: authentication, RBAC, approvals, and WebSocket authorisation absent."
+    - "G1A-D04 high: privilege boundary absent."
+    - "G1A-D05 high: audit chain absent."
+    - "G1A-D06 high: model lifecycle isolation absent."
+    - "G1A-D07 high: telemetry contract/capability matrix absent."
+    - "G1A-D08 high: stored-HTML risk and no injection tests."
+    - "G1A-D09 high: bounded WebSocket shutdown absent."
+risks:
+  new:
+    - "Future control endpoints could create a confused deputy if added to the current API identity."
+    - "Mutable models and manual lifecycle create promotion, rollback, and restart ambiguity."
+    - "Stale probe data could be presented as live without source/freshness metadata."
+  changed:
+    - "Observed dashboard shutdown hang provides concrete recovery-test evidence."
+evidence:
+  logs:
+    - "docs/evidence/diagnostics/2026-08-07/carat_rf_stop.md"
+  reports:
+    - "docs/architecture/control_plane.md"
+  plots: []
+  checksums:
+    - "dashboard/app.py: 17c9322023443a651fe7f50ba70077c4a22204e7fd9bfb632adbc78f480b33d7"
+decision:
+  status: "FAIL"
+  rationale: "Required G1A controls and executable tests are absent; schema/design artifacts are foundation only."
+next_actions:
+  required:
+    - "Keep the control plane simulation-only."
+    - "Implement schema and semantic validation before any state-changing route."
+    - "Introduce dedicated identities, durable state/locks/audit, RBAC, and supervised units."
+    - "Isolate candidate models and fix bounded WebSocket cancellation."
+    - "Pass the full G1A integration and injection suite."
+  optional:
+    - "Retain a local read-only UI only after development access risks are accepted."
+reviewers_required:
+  - "A00"
+  - "A11"
+  - "A12"
+  - "A15"
+  - "A16"
+  - "A17"

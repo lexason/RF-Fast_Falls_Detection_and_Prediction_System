@@ -1,0 +1,30 @@
+schema_version: "1.0"
+mode: DEVELOPMENT
+authentication: bootstrap_secret_plus_ephemeral_bearer
+production_identity_provider_configured: false
+development_users:
+  - actor_id: dev_viewer
+    display_name: Development Viewer
+    role: viewer
+    enabled: true
+    scopes: [detection:read, health:read, model:read, data:read, audit:read, chat:explain]
+  - actor_id: dev_operator
+    display_name: Development Operator
+    role: operator
+    enabled: true
+    scopes: [detection:read, detection:start, detection:stop, detection:emergency_stop, health:read, model:read, data:read, audit:read, maintenance:execute, workflow:approve, workflow:cancel_any, chat:explain, chat:plan]
+  - actor_id: dev_ml_engineer
+    display_name: Development ML Engineer
+    role: ml_engineer
+    enabled: true
+    scopes: [detection:read, health:read, model:read, model:train, model:recalibrate, data:read, data:validate, audit:read, chat:explain, chat:plan]
+  - actor_id: dev_admin
+    display_name: Development Administrator
+    role: administrator
+    enabled: true
+    scopes: [detection:read, detection:start, detection:stop, detection:emergency_stop, rf:transmit, health:read, model:read, model:train, model:evaluate, model:recalibrate, model:promote_approve, model:rollback, data:read, data:validate, data:capture_raw, data:raw_read, audit:read, maintenance:execute, terminal:restricted, workflow:approve, workflow:cancel_any, chat:explain, chat:plan]
+  - actor_id: dev_auditor
+    display_name: Development Auditor
+    role: auditor
+    enabled: true
+    scopes: [detection:read, health:read, model:read, data:read, audit:read, workflow:approve, chat:explain]

@@ -1,0 +1,29 @@
+[project]
+name = "rf-sensing-falls"
+version = "0.1.0"
+description = "DEVELOPMENT-stage offline RF sensing research proof of concept"
+requires-python = "==3.12.*"
+dependencies = [
+  "fastapi==0.135.1",
+  "jsonschema==4.10.3",
+  "numpy==1.26.4",
+  "onnxmltools==1.16.0",
+  "onnxruntime==1.28.0",
+  "pandas==3.0.1",
+  "pyarrow==25.0.0",
+  "psutil==7.2.2",
+  "PyYAML==6.0.1",
+  "pyzmq==24.0.1",
+  "scikit-learn==1.9.0",
+  "scipy==1.11.4",
+  "uvicorn==0.42.0",
+  "xgboost==3.3.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest==9.1.1"]
+
+[tool.pytest.ini_options]
+markers = [
+  "hw: requires separately authorised hardware access and is excluded from offline test runs",
+]

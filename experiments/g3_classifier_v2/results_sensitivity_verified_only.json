@@ -1,0 +1,164 @@
+{
+  "tag": "sensitivity_verified_only",
+  "model": "FMCWGaitNetCW (classifier v2)",
+  "n_windows_total": 3339,
+  "classes": [
+    "idle",
+    "walk",
+    "sit_down",
+    "stand_up",
+    "fall"
+  ],
+  "fold_results": [
+    {
+      "held_out_day": "2026-07-25",
+      "n_train": 2148,
+      "n_val": 379,
+      "n_test": 812,
+      "best_val_macro_f1": 0.7199524309601562,
+      "macro_f1": 0.3943397182527617
+    },
+    {
+      "held_out_day": "2026-07-27",
+      "n_train": 2211,
+      "n_val": 390,
+      "n_test": 738,
+      "best_val_macro_f1": 0.605797280249613,
+      "macro_f1": 0.6423462083783595
+    },
+    {
+      "held_out_day": "2026-07-28",
+      "n_train": 2321,
+      "n_val": 409,
+      "n_test": 609,
+      "best_val_macro_f1": 0.7116283545746083,
+      "macro_f1": 0.37703405304816406
+    },
+    {
+      "held_out_day": "2026-07-29",
+      "n_train": 2465,
+      "n_val": 435,
+      "n_test": 439,
+      "best_val_macro_f1": 0.7445368406428009,
+      "macro_f1": 0.6613912291379698
+    },
+    {
+      "held_out_day": "2026-07-29-floor",
+      "n_train": 2209,
+      "n_val": 389,
+      "n_test": 741,
+      "best_val_macro_f1": 0.784215763967204,
+      "macro_f1": 0.575218214623199
+    }
+  ],
+  "overall_macro_f1": 0.5816849280656432,
+  "per_class_f1": {
+    "idle": 0.8896935933147633,
+    "walk": 0.8650055782818892,
+    "sit_down": 0.5785123966942148,
+    "stand_up": 0.35502958579881655,
+    "fall": 0.22018348623853212
+  },
+  "confusion_matrix": [
+    [
+      1597,
+      246,
+      2,
+      4,
+      20
+    ],
+    [
+      83,
+      1163,
+      0,
+      4,
+      9
+    ],
+    [
+      5,
+      2,
+      35,
+      15,
+      2
+    ],
+    [
+      20,
+      11,
+      25,
+      30,
+      19
+    ],
+    [
+      16,
+      8,
+      0,
+      11,
+      12
+    ]
+  ],
+  "confusion_matrix_labels": [
+    "idle",
+    "walk",
+    "sit_down",
+    "stand_up",
+    "fall"
+  ],
+  "fall_recall": 0.2553191489361702,
+  "fall_specificity": 0.9848116646415553,
+  "fall_confusion": {
+    "tp": 12,
+    "fn": 35,
+    "tn": 3242,
+    "fp": 50
+  },
+  "classification_report": {
+    "idle": {
+      "precision": 0.9279488669378269,
+      "recall": 0.8544676297485286,
+      "f1-score": 0.8896935933147633,
+      "support": 1869.0
+    },
+    "walk": {
+      "precision": 0.8132867132867133,
+      "recall": 0.9237490071485306,
+      "f1-score": 0.8650055782818892,
+      "support": 1259.0
+    },
+    "sit_down": {
+      "precision": 0.5645161290322581,
+      "recall": 0.5932203389830508,
+      "f1-score": 0.5785123966942148,
+      "support": 59.0
+    },
+    "stand_up": {
+      "precision": 0.46875,
+      "recall": 0.2857142857142857,
+      "f1-score": 0.35502958579881655,
+      "support": 105.0
+    },
+    "fall": {
+      "precision": 0.1935483870967742,
+      "recall": 0.2553191489361702,
+      "f1-score": 0.22018348623853212,
+      "support": 47.0
+    },
+    "accuracy": 0.8496555855046422,
+    "macro avg": {
+      "precision": 0.5936100192707144,
+      "recall": 0.5824940821061132,
+      "f1-score": 0.5816849280656432,
+      "support": 3339.0
+    },
+    "weighted avg": {
+      "precision": 0.8535149386466673,
+      "recall": 0.8496555855046422,
+      "f1-score": 0.8486487902753029,
+      "support": 3339.0
+    }
+  },
+  "ac_macro_f1_target": 0.85,
+  "ac_macro_f1_pass": false,
+  "ac_fall_recall_target": 0.9,
+  "ac_fall_specificity_target": 0.9,
+  "ac_fall_pass": false
+}

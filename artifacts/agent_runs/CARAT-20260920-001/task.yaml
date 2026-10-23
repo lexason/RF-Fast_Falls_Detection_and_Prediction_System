@@ -1,0 +1,85 @@
+task_id: CARAT-20260920-001
+mode: BUILD
+intent: EXECUTE
+master_gate: G1A
+milestone: NA
+objective: >-
+  Implement the secure DEVELOPMENT operations-dashboard vertical slice while
+  preserving the existing research viewer and consuming current repository
+  model, dataset, evaluation, run, and configuration evidence.
+risk_tier: R3
+r2_material: true
+repo_state:
+  branch: main
+  input_commit: 0e4e519
+  dirty_before: true
+execution_context:
+  id: EC-20260920-CODEX-LOCAL-001
+  backend: CODEX
+  environment: LOCAL
+  capabilities:
+    repository_read: true
+    repository_write: true
+    local_shell: true
+    network_access: restricted
+    usrp_access: false
+    rf_tx_capable: false
+    protected_data_access: false
+    secrets_access: false
+    external_publish: false
+  verified_by: platform sandbox and repository commands
+logical_agents:
+  - A00_MASTER_ORCHESTRATOR
+  - A16_OPERATIONS_DASHBOARD_AND_CONTROL_PLANE_AGENT
+  - A17_CONVERSATIONAL_ORCHESTRATION_AND_TERMINAL_AGENT
+primary_backend: CODEX
+review_backend: CODEX_INDEPENDENT_AGENT
+validator_backend: LOCAL_NON_LLM_TOOL
+assumptions:
+  - The control plane is DEVELOPMENT and operational-capable through a fixed-argv local gateway.
+  - Existing uncommitted repository changes belong to the user and must remain intact.
+  - Raw-IQ capture/inventory may be orchestrated, but sample bytes and absolute paths will not be served.
+unknowns:
+  - Production identity provider and PostgreSQL deployment are not configured.
+  - No privileged systemd/PolicyKit helper has been deployed.
+  - Production-grade multi-user identity and durable distributed execution remain future deployment work.
+files_allowed_to_change:
+  - dashboard/
+  - configs/control_plane/
+  - schemas/
+  - tests/dashboard/
+  - tests/unit/test_control_plane.py
+  - docs/architecture/
+  - docs/decisions/
+  - artifacts/agent_runs/CARAT-20260920-001/
+  - configs/project.yaml
+  - pyproject.toml
+  - requirements-poc.lock
+  - .gitignore
+  - STATE.md
+  - inference/model_runtime.py
+protected_paths:
+  - data/raw/
+  - models/production/
+  - models/candidates/
+  - logs/tx_log.csv
+acceptance_evidence:
+  - Versioned workflows validate against the JSON Schema and closed action registry.
+  - No HTTP or chat input reaches a shell or arbitrary executable.
+  - Development authentication and scope-based RBAC deny unauthorised controls.
+  - Idempotency, resource locks, approval, cancellation, rollback, and state transitions have tests.
+  - Hash-chained audit records redact credentials and verify integrity.
+  - Host/service/N210 health is source-labelled and N210 CPU/RAM/process/filesystem stay unavailable.
+  - Training/evaluation create immutable candidates/evidence and never promote as a side effect.
+  - Live RF and raw capture require runtime-bound two-person approval and finite execution bounds.
+  - Promotion and rollback use verified artifact digests and active-pointer compare-and-swap.
+  - Dashboard renders all required panels responsively and preserves existing research routes.
+  - Chat is limited to Explain and Plan; the console exposes only registered parameter-free tools.
+  - Baseline and new non-hardware tests pass, and an independent reviewer returns a disposition.
+safety_constraints:
+  - No RF transmission or model-pointer mutation is performed during implementation or validation.
+  - Runtime actions use code-constructed argv with shell disabled; arbitrary command execution is absent.
+  - Raw IQ is never exposed through dashboard endpoints.
+human_approvals_required:
+  - Runtime RF start, raw capture, model promotion, rollback, and other R4 actions retain their workflow-specific approvals.
+status: REVIEW_PENDING

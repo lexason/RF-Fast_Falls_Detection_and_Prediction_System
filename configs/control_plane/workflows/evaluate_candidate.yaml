@@ -1,0 +1,35 @@
+api_version: v1
+id: evaluate_candidate
+display_name: Evaluate immutable candidate
+version: 1
+safety_class: maintenance
+required_scopes: [model:evaluate]
+approval_policy: {mode: confirmation, reason_required: true, reference_required: false, distinct_approvers: false, approval_ttl_seconds: 0}
+allowed_environments: [DEVELOPMENT]
+allowed_source_states: [STOPPED, MAINTENANCE]
+locks: [model:candidate]
+timeout_seconds: 3600
+dry_run_supported: true
+idempotency: {scope: workflow_and_parameters, duplicate_behavior: reject}
+parameters:
+  candidate_id: {type: string, required: true, pattern: "^[a-z0-9][a-z0-9._-]{2,63}$", min_length: 3, max_length: 64}
+  dataset_manifest: {type: string, required: true, pattern: "^(?!/)(?!.*\\.\\./).+\\.json$", max_length: 256}
+steps:
+  - id: grouped_development_evaluation
+    action: model.evaluate_candidate
+    arguments:
+      candidate_id: {parameter_ref: candidate_id}
+      dataset_manifest: {parameter_ref: dataset_manifest}
+    depends_on: []
+    timeout_seconds: 3500
+    retry: {max_attempts: 1, backoff_seconds: 0}
+    cancellable: true
+    on_failure: fail
+postconditions:
+  - {subject: model.active_changed, operator: is_false, expected: false}
+rollback_not_safe_reason: Evaluation writes a new immutable report and never changes the active model.
+audit:
+  event_types: [workflow.requested, workflow.step.completed, workflow.completed, workflow.failed]
+  redact_fields: [authorization, token]
+  reason_field: reason
+

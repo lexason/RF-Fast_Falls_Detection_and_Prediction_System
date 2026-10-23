@@ -1,0 +1,31 @@
+api_version: v1
+id: comprehensive_health_check
+display_name: Comprehensive local health check
+version: 1
+safety_class: informational
+required_scopes: [health:read]
+approval_policy: {mode: none, reason_required: false, reference_required: false, distinct_approvers: false, approval_ttl_seconds: 0}
+allowed_environments: [DEVELOPMENT]
+allowed_source_states: [STOPPED, MAINTENANCE, PREFLIGHT, STARTING, RUNNING, DEGRADED, STOPPING, FAILED]
+locks: [pipeline:health]
+timeout_seconds: 30
+dry_run_supported: true
+idempotency: {scope: workflow, duplicate_behavior: return_existing}
+parameters:
+  profile: {type: string, required: false, enum: [simulation], pattern: "^[a-z][a-z0-9_]{1,63}$", max_length: 32, default: simulation}
+steps:
+  - id: collect_health
+    action: health.collect
+    arguments: {profile: {parameter_ref: profile}}
+    depends_on: []
+    timeout_seconds: 20
+    retry: {max_attempts: 2, backoff_seconds: 0.1}
+    cancellable: true
+    on_failure: fail
+postconditions:
+  - {subject: health.snapshot_created, operator: is_true, expected: true}
+rollback_not_safe_reason: Read-only health collection has no state to roll back.
+audit:
+  event_types: [workflow.requested, workflow.step.completed, workflow.completed]
+  redact_fields: [authorization, token]
+  reason_field: reason

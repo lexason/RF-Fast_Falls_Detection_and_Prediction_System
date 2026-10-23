@@ -1,0 +1,44 @@
+captured_date=2026-08-07
+usrp_address=192.168.10.50
+host_interface=enp128s31f6
+host_address=192.168.10.1/24
+route=192.168.10.50 dev enp128s31f6 src 192.168.10.1
+link_state=UP LOWER_UP
+link_speed=1000Mb/s
+duplex=Full
+autonegotiation=on
+link_detected=yes
+observed_mtu=1500
+configured_legacy_mtu=9000
+ping_packets=20
+ping_received=20
+ping_loss=0%
+ping_rtt_ms_min_avg_max_mdev=1.267/1.416/1.555/0.086
+uhd_find_devices_exit=0
+probe_exit=0
+device_type=usrp2
+motherboard=N210r4
+hardware_revision=2577
+firmware_version=12.4
+fpga_version=11.1
+daughterboard=UBX-40 v2
+daughterboard_revision=5
+daughterboard_frequency_range_mhz=10-6000
+daughterboard_bandwidth_hz=40000000
+tx_antennas=TX/RX,CAL
+rx_antennas=TX/RX,RX2,CAL
+gpsdo=none
+exclusive_device_access=false
+gate_use=identity_and_reachability_only
+
+commands:
+ip -br link
+ip -br addr
+ip route
+ip route get 192.168.10.50
+ping -c 20 -W 1 192.168.10.50
+ethtool enp128s31f6
+uhd_find_devices --args=addr=192.168.10.50
+uhd_usrp_probe --args=addr=192.168.10.50
+
+No command in this file may be rerun without confirming exclusive ownership and current task scope.

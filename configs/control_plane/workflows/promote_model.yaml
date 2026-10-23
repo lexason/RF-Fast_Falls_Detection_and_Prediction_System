@@ -1,0 +1,35 @@
+api_version: v1
+id: promote_model
+display_name: Promote approved model atomically
+version: 1
+safety_class: maintenance
+required_scopes: [model:promote_approve]
+approval_policy: {mode: single_operator, reason_required: true, reference_required: true, distinct_approvers: false, approval_ttl_seconds: 3600, minimum_deliberation_seconds: 120}
+allowed_environments: [DEVELOPMENT]
+allowed_source_states: [STOPPED, MAINTENANCE]
+locks: [model:active]
+timeout_seconds: 120
+dry_run_supported: true
+idempotency: {scope: workflow_and_parameters, duplicate_behavior: reject}
+parameters:
+  model_id: {type: string, required: true, pattern: "^[a-z0-9][a-z0-9._-]{2,63}$", min_length: 3, max_length: 64}
+  expected_active_digest: {type: string, required: true, pattern: "^[a-f0-9]{64}$", min_length: 64, max_length: 64}
+steps:
+  - id: verify_and_activate_pointer
+    action: model.promote
+    arguments:
+      model_id: {parameter_ref: model_id}
+      expected_active_digest: {parameter_ref: expected_active_digest}
+    depends_on: []
+    timeout_seconds: 60
+    retry: {max_attempts: 1, backoff_seconds: 0}
+    cancellable: false
+    on_failure: fail
+postconditions:
+  - {subject: model.active_pointer_verified, operator: is_true, expected: true}
+rollback_not_safe_reason: Compare-and-swap leaves the prior pointer in immutable history for the separate rollback workflow.
+audit:
+  event_types: [workflow.requested, workflow.step.completed, workflow.completed, workflow.failed, workflow.approval.decided]
+  redact_fields: [authorization, token]
+  reason_field: reason
+

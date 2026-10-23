@@ -1,0 +1,94 @@
+handoff_id: "32d906a8-ba9d-4eb2-96c8-61046b215690"
+agent_id: "A01_EVIDENCE+A02_CLINICAL_SAFETY+A12_SECURITY_PRIVACY_REGULATORY"
+timestamp_utc: "2026-08-07T03:58:04Z"
+task:
+  objective: "Read-only framework v1.1 G0 governance, evidence, clinical-safety, privacy, regulatory, RF-compliance, and naming audit."
+  scope: "/home/sdr-research/carat_research only"
+inputs:
+  files:
+    - "RF_SENSING_FALLS_MULTI_AGENT_FRAMEWORK_v1_1.md"
+    - "CLAUDE.md"
+    - "STATE.md"
+    - "config/system.yaml"
+    - "config/probe.txt"
+    - "logs/tx_log.csv"
+    - "RUNBOOK.md"
+    - "dashboard/app.py"
+    - "models/production/metadata.json"
+    - "docs/"
+  data_versions:
+    - "53 local raw-session manifests observed; no dataset version approved."
+  model_versions:
+    - "models/production legacy v3"
+    - "models/production_v4 staged"
+    - "models/production_v5 staged"
+  assumptions:
+    - "Repository claims are not approval evidence."
+    - "Framework v1.1 G0 supersedes legacy same-name gates."
+work_performed:
+  commands:
+    - "Read all 3505 framework lines in sequential chunks."
+    - "Inspected Git provenance, governance artifacts, configuration, logs, manifests, model metadata, dashboard routes, and local proposal sources."
+    - "Mapped all framework v1.1 G0 criteria."
+  files_changed: []
+  analyses:
+    - "Separated local facts, requirements, hypotheses, external claims, and approval gaps."
+findings:
+  confirmed:
+    - "Legacy G0/G1/G2 use different acceptance criteria and cannot pass framework v1.1 gates."
+    - "No approved project name or acronym was evidenced."
+    - "Intended population, user, setting, decision, and clinical workflow were not frozen."
+    - "Products A-D were not formally separated in legacy governance."
+    - "No HREC/site approval, TGA memo, PIA, clinical partner appointment, escalation workflow, RF approval, or formal owner assignment was evidenced."
+    - "Repeated self-staged falls were recorded with padding/readiness checks but without a repository-linked institutional determination or approved protocol."
+    - "Legacy classifier metadata reports fall recall 0.170 and uncalibrated non-fall outputs."
+    - "The legacy dashboard is unauthenticated and displays FALL ALERT/confidence language."
+  uncertain:
+    - "Whether approvals or institutional determinations exist outside the repository."
+    - "Whether every non-synthetic recording contains only the researcher."
+    - "Whether CARAT or RF-FAST has any approved naming scope."
+  defects:
+    - "GOV-001 critical: framework G0 bypass risk from legacy gate collision."
+    - "ETH-001 critical: staged-fall safety and ethics governance absent."
+    - "RF-001 critical: CARAT RF authorisation evidence/interlocks absent."
+    - "REG-001 high: TGA applicability unresolved."
+    - "PRIV-001 high: no governed privacy architecture."
+    - "CLIN-001 high: dashboard language exceeds model evidence."
+    - "EVID-001 high: evidence base was not governed."
+risks:
+  new:
+    - "Unsupported gate advancement."
+    - "Participant injury or unapproved human research."
+    - "RF compliance failure."
+    - "Clinical over-reliance and alert harm."
+    - "Privacy and unauthorised derived-data access."
+  changed:
+    - "Antenna mismatch escalated from performance to RF compliance risk."
+evidence:
+  logs:
+    - "STATE.md"
+    - "logs/tx_log.csv"
+  reports:
+    - "config/probe.txt"
+    - "models/production/metadata.json"
+  plots: []
+  checksums:
+    - "RF_SENSING_FALLS_MULTI_AGENT_FRAMEWORK_v1_1.md: 82d724ee94cb79e7357caad9da6ef46d30d955746d08381138ff85fa6aa809b7"
+decision:
+  status: "FAIL"
+  rationale: "All eight framework v1.1 G0 criteria lacked approved evidence at inspection time."
+next_actions:
+  required:
+    - "Adopt neutral working naming and approve ADR 0000."
+    - "Approve intended use with Products A-D separated."
+    - "Obtain ethics/research-governance determination and pause staged falls."
+    - "Complete TGA, privacy, RF, clinical workflow, risk, evidence, and owner assignments."
+  optional:
+    - "Continue offline replay, synthetic, documentation, and software tests."
+reviewers_required:
+  - "A00_MASTER_ORCHESTRATOR"
+  - "Principal investigator or sponsor"
+  - "Clinical safety reviewer"
+  - "HREC/research-governance representative"
+  - "Regulatory, RF, privacy, security, human-factors, data, and biostatistics reviewers"
+  - "A15_RED_TEAM"

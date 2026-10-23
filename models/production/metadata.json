@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "model_id": "rf-sensing-falls-v3-legacy-baseline",
+  "deployment_status": "OFFLINE_BASELINE",
+  "promotion_eligible": false,
+  "performance_gate_passed": false,
+  "score_semantics": "uncalibrated_model_score_not_probability",
+  "onnx_output_transform": "softmax_raw_margins",
+  "artifact_sha256": {
+    "stage1_idle_walk_transient.onnx": "5fe50c6a7d4b05aa12b47d67eec9484ed2432f5eb71496789c0eeba8c334a32b",
+    "stage2_transient_subclass.onnx": "bc2786aa0e4611348568f344b310c578ed5d7f0b8459707b335d17fe69d28fad"
+  },
+  "dataset": {
+    "path": "data/processed/g3_features.parquet",
+    "sha256": "d5524b0181845e6c48dc613c78248c52937e588343c7085118cf7fedfb48119e",
+    "usage": "legacy_development_only"
+  },
+  "evaluation_artifact": "artifacts/evaluations/rf-sensing-falls-v3-oof-transient-2026-08-07.json",
+  "evaluation_artifact_sha256": "d08c98fbb079c03159ac1a38e993b3f2e3d950e1e56419f8298c56cb116d018e",
+  "source_commit": "0e4e519f9f6c410515f41200435103d14dd4cc7b",
+  "model": "v3 hierarchical (stage1 idle/walk/transient -> stage2 sit_down/stand_up/lie_down/fall)",
+  "trained_on": "all available labeled windows (data/processed/g3_features.parquet), not held out",
+  "n_windows_total": 3487,
+  "feature_names": [
+    "spectral_centroid_hz",
+    "doppler_bandwidth_hz",
+    "spectral_entropy",
+    "energy_db",
+    "torso_line_strength",
+    "transient_score_db",
+    "descent_speed_hz_per_s",
+    "post_event_stillness_db",
+    "event_duration_s"
+  ],
+  "stage1_classes": [
+    "idle",
+    "walk",
+    "transient"
+  ],
+  "stage2_classes": [
+    "sit_down",
+    "stand_up",
+    "lie_down",
+    "fall"
+  ],
+  "final_classes": [
+    "idle",
+    "walk",
+    "sit_down",
+    "stand_up",
+    "lie_down",
+    "fall"
+  ],
+  "fall_decision_threshold": 0.5,
+  "fall_threshold_calibration": "Evaluation-bound legacy DEVELOPMENT policy only. Threshold 0.50 is bound to artifacts/evaluations/rf-sensing-falls-v3-oof-transient-2026-08-07.json: recall=0.170213, specificity=0.916667, PPV=0.235294 on 359 pooled leave-one-day/geometry-out transient windows (47 falls). It failed acceptance criteria and is not an independent calibration. The former threshold 0.0004 is explicitly invalid and prohibited because its full-population sweep did not match the transient-only serving path.",
+  "fall_probability_formula": "p_fall = p(stage1=transient) * p(stage2=fall | transient)",
+  "window_s": 3.0,
+  "hop_s": 0.5,
+  "calibration_note": "Neither stage output nor the combined fall score is a calibrated probability. The threshold is a frozen offline-baseline decision policy, not evidence of deployment calibration.",
+  "onnx_output_note": "The ONNX-exported models' \"probabilities\" output is RAW PRE-SOFTMAX SCORES, not normalized probabilities, despite the output name -- verified 2026-07-31 by comparing against native XGBoost predict_proba() (which IS correctly normalized) on identical inputs: applying softmax manually to the ONNX raw output matches native predict_proba to within 2e-7. Any inference code consuming these ONNX models MUST apply softmax explicitly to the \"probabilities\" output before using it as an actual probability (e.g. for the fall_decision_threshold comparison below) -- this is an onnxmltools conversion quirk for the multi:softmax XGBoost objective, not a modeling bug."
+}

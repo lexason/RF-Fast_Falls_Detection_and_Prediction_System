@@ -1,0 +1,238 @@
+{
+  "schema_version": "1.0",
+  "evaluation_id": "rf-sensing-falls-product-a-physics6-dev-001-grouped-development-v1",
+  "candidate_id": "rf-sensing-falls-product-a-physics6-dev-001",
+  "created_at_utc": "2026-08-07T08:11:19.293742+00:00",
+  "status": "FAILED_ACCEPTANCE_CRITERIA",
+  "promotion_eligible": false,
+  "performance_gate_passed": false,
+  "fall_decision_threshold": null,
+  "candidate_bundle": {
+    "path": "models/candidates/rf-sensing-falls-product-a-physics6-dev-001",
+    "metadata_sha256": "067a0e39a2335c45d19b001e11b49f1b4f6552d3b5f84a15c9c139b90feb1079",
+    "artifact_sha256": {
+      "product_a_fall_logistic.json": "ab60a615fdc4c9b2ef707e57624966bd06e3264d7981da63cf28d3d796ca16f4"
+    }
+  },
+  "dataset": {
+    "path": "data/processed/g3_features_v2_conflict_free.parquet",
+    "sha256": "b8797febb691ce177c2e6f34750f3c61cc15bd85f98641cf340e97b6e5ccdff4",
+    "split": "grouped leave-one-day-or-geometry-out; not participant/site/room independent"
+  },
+  "evaluator": {
+    "path": "models/evaluate_product_a_development.py",
+    "sha256": "80420e7b6535b773d9020bd5db67d9c403343c11e808e8a1fbbc73333a844475",
+    "numpy_version": "1.26.4",
+    "pandas_version": "3.0.1",
+    "scikit_learn_version": "1.9.0"
+  },
+  "primary_verified_only": {
+    "scope": "fall vs verified sit_down/stand_up; fall-vs-lie_down is not estimable",
+    "n": 142,
+    "n_falls": 30,
+    "n_sit_down": 42,
+    "n_stand_up": 70,
+    "n_verified_lie_down": 0,
+    "auroc": 0.5812499999999999,
+    "auprc": 0.3393430180919255,
+    "brier": 0.2519916927593443,
+    "fixed_0_5_diagnostic": {
+      "threshold": 0.5,
+      "recall": 0.6,
+      "specificity": 0.7232142857142857,
+      "ppv": 0.3673469387755102,
+      "tp": 18,
+      "fn": 12,
+      "fp": 31,
+      "tn": 81
+    },
+    "balanced_development_point_descriptive_only": {
+      "threshold": 0.41100000000000003,
+      "recall": 0.6333333333333333,
+      "specificity": 0.6071428571428571,
+      "ppv": 0.30158730158730157,
+      "tp": 19,
+      "fn": 11,
+      "fp": 44,
+      "tn": 68
+    },
+    "folds": [
+      {
+        "held_out_day_or_geometry": "2026-07-25",
+        "n_train": 136,
+        "n_test": 6,
+        "n_falls": 3,
+        "auroc": 0.888888888888889,
+        "auprc": 0.9166666666666665
+      },
+      {
+        "held_out_day_or_geometry": "2026-07-27",
+        "n_train": 107,
+        "n_test": 35,
+        "n_falls": 1,
+        "auroc": 1.0,
+        "auprc": 1.0
+      },
+      {
+        "held_out_day_or_geometry": "2026-07-28",
+        "n_train": 119,
+        "n_test": 23,
+        "n_falls": 6,
+        "auroc": 0.9117647058823528,
+        "auprc": 0.8357142857142856
+      },
+      {
+        "held_out_day_or_geometry": "2026-07-29",
+        "n_train": 122,
+        "n_test": 20,
+        "n_falls": 3,
+        "auroc": 0.7254901960784313,
+        "auprc": 0.3769230769230769
+      },
+      {
+        "held_out_day_or_geometry": "2026-07-29-floor",
+        "n_train": 84,
+        "n_test": 58,
+        "n_falls": 17,
+        "auroc": 0.4017216642754663,
+        "auprc": 0.35248926312331386
+      }
+    ]
+  },
+  "secondary_legacy_label_sensitivity": {
+    "scope": "fall vs sit_down/stand_up/unverified lie_down; not a primary validation claim",
+    "n": 216,
+    "n_falls": 30,
+    "n_hard_negatives": 186,
+    "n_unverified_lie_down": 31,
+    "auroc": 0.6774193548387097,
+    "auprc": 0.32730600852302305,
+    "brier": 0.1980785303089949,
+    "fixed_0_5_diagnostic": {
+      "threshold": 0.5,
+      "recall": 0.6,
+      "specificity": 0.7473118279569892,
+      "ppv": 0.27692307692307694,
+      "tp": 18,
+      "fn": 12,
+      "fp": 47,
+      "tn": 139
+    },
+    "balanced_development_point_descriptive_only": {
+      "threshold": 0.40800000000000003,
+      "recall": 0.6666666666666666,
+      "specificity": 0.6344086021505376,
+      "ppv": 0.22727272727272727,
+      "tp": 20,
+      "fn": 10,
+      "fp": 68,
+      "tn": 118
+    },
+    "folds": [
+      {
+        "held_out_day_or_geometry": "2026-07-25",
+        "n_train": 187,
+        "n_test": 29,
+        "n_falls": 3,
+        "auroc": 0.8333333333333333,
+        "auprc": 0.3686868686868687
+      },
+      {
+        "held_out_day_or_geometry": "2026-07-27",
+        "n_train": 175,
+        "n_test": 41,
+        "n_falls": 1,
+        "auroc": 1.0,
+        "auprc": 1.0
+      },
+      {
+        "held_out_day_or_geometry": "2026-07-28",
+        "n_train": 187,
+        "n_test": 29,
+        "n_falls": 6,
+        "auroc": 0.8478260869565217,
+        "auprc": 0.5285714285714285
+      },
+      {
+        "held_out_day_or_geometry": "2026-07-29",
+        "n_train": 190,
+        "n_test": 26,
+        "n_falls": 3,
+        "auroc": 0.7101449275362319,
+        "auprc": 0.3833333333333333
+      },
+      {
+        "held_out_day_or_geometry": "2026-07-29-floor",
+        "n_train": 125,
+        "n_test": 91,
+        "n_falls": 17,
+        "auroc": 0.7058823529411764,
+        "auprc": 0.39505182459729904
+      }
+    ]
+  },
+  "quarantined_pilot_error_analysis": {
+    "session_id": "2026-07-18_fall_gain5",
+    "adjudication": "artifacts/adjudications/2026-07-18_fall_gain5-review-v1.json",
+    "adjudication_sha256": "608a9a7f03efd4388ed813f005a780d670b3adfe82394c9727a84900c98ef72d",
+    "permitted_use": "development_error_analysis_only",
+    "independent_fall_count": null,
+    "source_automatic_fragment_count": 2,
+    "documented_episode_count": 1,
+    "centered_window_overlap_s": 1.450000000000001,
+    "fragments": [
+      {
+        "fragment": 1,
+        "source_automatic_label": "fall",
+        "t_start": 8.028,
+        "t_end": 8.428,
+        "development_score": 0.3233639562551664,
+        "fixed_0_5_diagnostic_only": false,
+        "direction_sign_diagnostic": -1.0,
+        "strong_direction_frames": 7,
+        "features": {
+          "doppler_bandwidth_hz": 172.18517583678215,
+          "energy_db": 25.269319534301758,
+          "transient_score_db": 5.335294723510742,
+          "descent_speed_hz_per_s": 10156.249999999856,
+          "post_event_stillness_db": 24.757259368896484,
+          "event_duration_s": 0.40000000000000036
+        }
+      },
+      {
+        "fragment": 2,
+        "source_automatic_label": "fall",
+        "t_start": 9.678,
+        "t_end": 9.878,
+        "development_score": 0.7528719904393995,
+        "fixed_0_5_diagnostic_only": true,
+        "direction_sign_diagnostic": 1.0,
+        "strong_direction_frames": 3,
+        "features": {
+          "doppler_bandwidth_hz": 173.85030922059437,
+          "energy_db": 24.527280807495117,
+          "transient_score_db": 4.605690002441406,
+          "descent_speed_hz_per_s": 10546.875000000226,
+          "post_event_stillness_db": 23.28927230834961,
+          "event_duration_s": 0.1999999999999993
+        }
+      }
+    ],
+    "interpretation": "The two source labels are unresolved motion phases in one uncontrolled pilot episode; their scores must not select a model, threshold, calibration point, or performance claim.",
+    "source_hashes": {
+      "manifest_sha256": "fc8b2aea240e0c4eaf2a551b5db87ac62b76b383ed23c0e5f99f21ac7fe79f22",
+      "labels_sha256": "6a99e79e8954ffdec66e8cd3090dda24be8044207fc9c1f0700bdb2219dfad7b",
+      "sigmf_meta_sha256": "e40434de30bc44d97bbdf0a0c7506d8667401229d4c432dbd5852e79fb249af8",
+      "sigmf_data_sha256": "32bcd7bb0b1e6a9880ecb167d3e95ee7f8711c518d420d4b8a3d63d844fdddef",
+      "sigmf_data_sha512": "30bfc1304dc10cd274503bcca89306753c7d80166c74093e4bf98f0ae735086e170a1db98cc1cddd589616cd56721559f9400a2c799793e415b47e535d6a61db"
+    }
+  },
+  "threshold_policy": null,
+  "failure_reasons": [
+    "no participant, room, site, calibration, or final-test independence",
+    "single apparent researcher and one laboratory",
+    "no verified lie_down examples; fall-vs-lie_down performance is not estimable",
+    "candidate scores are uncalibrated and no deployment threshold is approved",
+    "the inspected pilot clip is quarantined error-analysis evidence, not test data"
+  ]
+}

@@ -1,0 +1,74 @@
+handoff_id: "bd79cb73-d668-412a-9e2c-3c931c9619fb"
+agent_id: "A15_RED_TEAM_AND_INDEPENDENT_AUDIT_AGENT"
+timestamp_utc: "2026-08-07T04:42:13Z"
+task:
+  objective: "Final offline regression review of A15-RR-001 through A15-RR-003."
+  scope: "Non-executable Phase 0 baseline inside /home/sdr-research/carat_research only."
+inputs:
+  files:
+    - configs/control_plane/action_registry.yaml
+    - schemas/workflow.schema.json
+    - schemas/health_snapshot.schema.json
+    - tools/governance_validation.py
+    - tests/unit/test_phase0_governance.py
+    - Makefile
+    - reports/validation/2026-08-07_initial_gate_gap_report.md
+  data_versions: []
+  model_versions: []
+  assumptions:
+    - "Acceptance does not authorise execution, hardware access, RF activity, or gate passage."
+work_performed:
+  commands:
+    - make validate-governance
+    - make test
+    - "former hardware-enabling flags plus make test-hardware"
+    - "in-memory RF argument, digest-binding, stale-health, and parameter-reference adversarial replays"
+  files_changed: []
+  analyses:
+    - "Typed and bounded action values"
+    - "RF workflow argument profile and approval digest binding"
+    - "Health freshness and aggregation"
+    - "Actual Make target parsing"
+findings:
+  confirmed:
+    - "A15-RR-002 and A15-RR-003 were closed."
+    - "Direct RF duration/digest exploits, mismatched profile binding, and stale critical HEALTHY were rejected."
+    - "G0, G1, and G1A remained FAIL."
+  uncertain:
+    - "Runtime enforcement remains unimplemented."
+  defects:
+    - id: A15-RR-001
+      status: PARTIAL
+      defect: "Referenced parameters did not enforce registry pattern/min_length or validate defaults."
+      demonstration: "model.train_candidate accepted dataset_manifest default /etc/passwd."
+      mandatory_correction: "Enforce exact registry string constraints and validate defaults; add the regression."
+risks:
+  new:
+    - "A referenced parameter default could bypass an action path constraint."
+  changed:
+    - "Direct RF and stale-health bypasses were closed without enabling hardware."
+evidence:
+  logs:
+    - "make validate-governance: 25 passed"
+    - "make test: 25 passed; 3 hardware tests deselected"
+    - "make test-hardware: refused with exit 2"
+    - "parameter path/default bypass: accepted"
+  reports:
+    - reports/validation/2026-08-07_initial_gate_gap_report.md
+  plots: []
+  checksums:
+    - "RF_SENSING_FALLS_MULTI_AGENT_FRAMEWORK_v1_1.md: 82d724ee94cb79e7357caad9da6ef46d30d955746d08381138ff85fa6aa809b7"
+decision:
+  status: CONDITIONAL
+  disposition: CONDITIONAL
+  rationale: "Full baseline acceptance was withheld until the parameter-reference default bypass was closed."
+next_actions:
+  required:
+    - "Enforce registry pattern and minimum length on parameter definitions."
+    - "Validate parameter defaults and add the /etc/passwd regression."
+    - "Keep G0, G1, and G1A at FAIL."
+  optional:
+    - "Anchor the final baseline to a checksum manifest."
+reviewers_required:
+  - A15
+  - A16

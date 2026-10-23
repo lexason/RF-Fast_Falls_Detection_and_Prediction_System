@@ -1,0 +1,112 @@
+handoff_id: "74c86e1c-8682-4aa6-a3ad-d780a8b96cc2"
+agent_id: "A15_RED_TEAM_AND_INDEPENDENT_AUDIT_AGENT"
+timestamp_utc: "2026-08-07T04:21:45Z"
+task:
+  objective: "Independently falsify the delivered Phase 0 foundation and its G0/G1/G1A conclusions."
+  scope: "/home/sdr-research/carat_research only; read-only; offline validation only"
+inputs:
+  files:
+    - AGENTS.md
+    - README.md
+    - configs/
+    - docs/
+    - risk/
+    - reports/validation/
+    - schemas/
+    - tests/unit/
+    - Makefile
+  data_versions: []
+  model_versions: []
+  assumptions:
+    - "External-source currency was not independently rechecked in this offline audit."
+    - "No external repository, N210, RF device, or hardware interface was accessed."
+work_performed:
+  commands:
+    - make validate-governance
+    - make test
+    - "offline JSON/YAML/CSV parsing"
+    - "adversarial in-memory schema validation"
+    - "RTM/evidence foreign-key consistency checks"
+    - "git diff --check and scoped git status"
+  files_changed: []
+  analyses:
+    - "Schema bypass and contradictory-manifest testing"
+    - "Gate-conclusion falsification"
+    - "Traceability and residual-risk accounting review"
+findings:
+  confirmed:
+    - "The exact initial artifact set existed."
+    - "Framework checksum matched EV-001."
+    - "G0=FAIL, G1=FAIL, and G1A=FAIL were appropriate and not falsified."
+  defects:
+    - id: A15-P0-001
+      severity: CRITICAL
+      defect: "User-controlled environment flags could reach a TX CAL-loopback pytest target."
+      mandatory_correction: "Remove executable hardware/TX from the generic Make target or bind it to implemented signed approval and exclusive-lock enforcement."
+    - id: A15-P0-002
+      severity: CRITICAL
+      defect: "The workflow action field was a blacklist rather than a closed registry."
+      exploit: "bash.exec with approval mode none validated."
+      mandatory_correction: "Add a versioned action allowlist and semantic scope, approval, graph, lock, rollback, and audit checks."
+    - id: A15-P0-003
+      severity: CRITICAL
+      defect: "The recording schema accepted incoherent TX, ungoverned human data, and reversed timestamps."
+      mandatory_correction: "Add RF approval/profile, human-governance, time, and complete artifact-checksum semantics."
+    - id: A15-P0-004
+      severity: HIGH
+      defect: "Health capability, critical-check, subject, and aggregate contradictions were accepted."
+      mandatory_correction: "Add semantic capability and aggregation validation."
+    - id: A15-P0-005
+      severity: HIGH
+      defect: "Evidence and literature linked to requirement IDs absent from the RTM."
+      mandatory_correction: "Repair foreign keys and enforce cross-ledger integrity."
+    - id: A15-P0-006
+      severity: HIGH
+      defect: "Risk and hazard ledgers reduced residual ratings before controls were implemented or approved."
+      mandatory_correction: "Separate current from projected risk and expose unassigned ownership, dates, verification, and acceptance."
+    - id: A15-P0-007
+      severity: HIGH
+      defect: "Initial test/report wording overstated semantic coverage."
+      mandatory_correction: "Expand adversarial tests and narrow all claims to demonstrated evidence."
+    - id: A15-P0-008
+      severity: HIGH
+      defect: "The archived full probe preceded exclusive-ownership verification."
+      mandatory_correction: "Record a diagnostic nonconformance and keep future device access behind an exclusive lock."
+    - id: A15-P0-009
+      severity: MEDIUM
+      defect: "PIA and evidence-ledger current/target wording was inconsistent."
+      mandatory_correction: "Mark immutability unimplemented, state that no approved PIA exists, and archive official URLs/access dates."
+risks:
+  new:
+    - "Boolean environment flags could be mistaken for safety authorisation."
+    - "Syntactically valid but semantically unsafe manifests could be accepted downstream."
+    - "Dangling traceability identifiers could hide unimplemented requirements."
+  changed:
+    - "Current residual risks must not be reduced until controls are implemented and verified."
+evidence:
+  logs:
+    - "make validate-governance: 15 passed"
+    - "make test: 15 passed; 3 hardware tests deselected"
+  reports:
+    - reports/validation/2026-08-07_initial_gate_gap_report.md
+  plots: []
+  checksums:
+    - "RF_SENSING_FALLS_MULTI_AGENT_FRAMEWORK_v1_1.md: 82d724ee94cb79e7357caad9da6ef46d30d955746d08381138ff85fa6aa809b7"
+decision:
+  status: FAIL
+  disposition: REJECT
+  rationale: "Critical safety and semantic bypasses required correction before accepting the Phase 0 baseline."
+next_actions:
+  required:
+    - "Correct all A15-P0-001 through A15-P0-009 findings."
+    - "Rerun adversarial validation and independent A15 review."
+  optional:
+    - "Add a dedicated offline cross-document governance linter."
+reviewers_required:
+  - A00
+  - A02
+  - A03/A04
+  - A11
+  - A12
+  - A15
+  - A16

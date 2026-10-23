@@ -1,0 +1,308 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.wrap{font-size:12px;color:var(--color-text-primary);padding:12px 0 0;}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;font-size:11px;}
+.leg{display:flex;align-items:center;gap:4px;}
+.leg-dot{width:10px;height:10px;border-radius:3px;}
+.arch{display:flex;flex-direction:column;gap:3px;position:relative;}
+.layer-row{display:flex;gap:6px;align-items:stretch;min-height:52px;}
+.layer-label{width:62px;min-width:62px;font-size:10px;color:var(--color-text-tertiary);display:flex;align-items:center;line-height:1.3;padding-right:4px;}
+.boxes{display:flex;gap:5px;flex:1;align-items:stretch;}
+.box{border:0.5px solid;border-radius:8px;padding:7px 8px;cursor:pointer;flex:1;transition:opacity .12s;line-height:1.35;display:flex;flex-direction:column;justify-content:center;}
+.box:hover{opacity:0.75;}
+.box.wide{flex:2;}
+.box.full{flex:1;}
+.box b{font-weight:500;font-size:11.5px;display:block;}
+.box span{font-size:10px;color:inherit;opacity:0.75;margin-top:1px;display:block;}
+.connector{display:flex;justify-content:flex-start;padding-left:68px;}
+.arr-svg{width:100%;height:18px;overflow:visible;}
+.detail{margin-top:8px;border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-secondary);padding:12px 14px;font-size:12px;line-height:1.6;background:var(--color-background-secondary);display:none;}
+.detail.show{display:block;}
+.detail h3{font-size:13px;font-weight:500;margin-bottom:6px;}
+.detail p{color:var(--color-text-secondary);font-size:12px;}
+.detail code{font-family:var(--font-mono);font-size:11px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:4px;padding:2px 5px;}
+.tag{display:inline-block;font-size:10px;padding:1px 6px;border-radius:10px;margin:2px 2px 0 0;font-weight:400;}
+.divider{height:1px;background:var(--color-border-tertiary);margin:4px 0 4px 68px;}
+
+/* Color classes mirroring the SVG ramp system */
+.teal{background:#E1F5EE;border-color:#0F6E56;color:#085041;}
+.blue{background:#E6F1FB;border-color:#185FA5;color:#0C447C;}
+.amber{background:#FAEEDA;border-color:#854F0B;color:#633806;}
+.purple{background:#EEEDFE;border-color:#534AB7;color:#3C3489;}
+.coral{background:#FAECE7;border-color:#993C1D;color:#4A1B0C;}
+.gray{background:#F1EFE8;border-color:#5F5E5A;color:#444441;}
+.green{background:#EAF3DE;border-color:#3B6D11;color:#27500A;}
+.red{background:#FCEBEB;border-color:#A32D2D;color:#501313;}
+.pink{background:#FBEAF0;border-color:#993556;color:#4B1528;}
+
+@media(prefers-color-scheme:dark){
+.teal{background:#04342C;border-color:#1D9E75;color:#9FE1CB;}
+.blue{background:#042C53;border-color:#378ADD;color:#B5D4F4;}
+.amber{background:#412402;border-color:#BA7517;color:#FAC775;}
+.purple{background:#26215C;border-color:#7F77DD;color:#CECBF6;}
+.coral{background:#4A1B0C;border-color:#D85A30;color:#F5C4B3;}
+.gray{background:#2C2C2A;border-color:#888780;color:#D3D1C7;}
+.green{background:#173404;border-color:#639922;color:#C0DD97;}
+.red{background:#501313;border-color:#E24B4A;color:#F7C1C1;}
+.pink{background:#4B1528;border-color:#D4537E;color:#F4C0D1;}
+}
+</style>
+<div class="wrap">
+<h2 class="sr-only">RF-FAST Enhanced End-to-End System Architecture</h2>
+<div class="legend">
+  <div class="leg"><div class="leg-dot" style="background:#1D9E75"></div>Active SDR (USRP)</div>
+  <div class="leg"><div class="leg-dot" style="background:#378ADD"></div>Passive WiFi CSI (ESP32S3)</div>
+  <div class="leg"><div class="leg-dot" style="background:#BA7517"></div>IoT/Wearable</div>
+  <div class="leg"><div class="leg-dot" style="background:#7F77DD"></div>Signal processing</div>
+  <div class="leg"><div class="leg-dot" style="background:#D85A30"></div>AI inference</div>
+  <div class="leg"><div class="leg-dot" style="background:#888780"></div>Audit/Delivery</div>
+</div>
+<div class="arch">
+
+  <div class="layer-row">
+    <div class="layer-label">Sensing layer</div>
+    <div class="boxes">
+      <div class="box teal" onclick="show('usrp')">
+        <b>USRP N210</b>
+        <span>FMCW active radar · main room · 2.4/5.8 GHz · 20 MHz BW</span>
+      </div>
+      <div class="box blue wide" onclick="show('esp')">
+        <b>ESP32S3 nodes ×3</b>
+        <span>Passive WiFi CSI · bedroom, bathroom, kitchen · 52 subcarriers · ~100 Hz</span>
+      </div>
+      <div class="box amber" onclick="show('iot')">
+        <b>IoT / wearable</b>
+        <span>Wrist IMU · HR · PIR motion · door/pressure sensors · BLE</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <svg class="arr-svg" viewBox="0 0 580 18" preserveAspectRatio="none"><line x1="80" y1="0" x2="80" y2="18" stroke="var(--color-border-secondary)" stroke-width="0.8" marker-end="url(#a)"/><line x1="290" y1="0" x2="290" y2="18" stroke="var(--color-border-secondary)" stroke-width="0.8"/><line x1="500" y1="0" x2="500" y2="18" stroke="var(--color-border-secondary)" stroke-width="0.8"/><defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="var(--color-border-primary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs></svg>
+  </div>
+
+  <div class="layer-row">
+    <div class="layer-label">Edge hub</div>
+    <div class="boxes">
+      <div class="box gray full" onclick="show('hub')">
+        <b>Edge hub — Raspberry Pi 4B</b>
+        <span>GigE → USRP · WiFi MQTT → ESP32S3 nodes · BLE gateway · NTP time-sync across all streams · TLS egress only (features, not raw data)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <svg class="arr-svg" viewBox="0 0 580 18" preserveAspectRatio="none"><line x1="200" y1="0" x2="200" y2="18" stroke="var(--color-border-secondary)" stroke-width="0.8"/><line x1="420" y1="0" x2="420" y2="18" stroke="var(--color-border-secondary)" stroke-width="0.8"/></svg>
+  </div>
+
+  <div class="layer-row">
+    <div class="layer-label">Signal processing (Dell T2)</div>
+    <div class="boxes">
+      <div class="box purple wide" onclick="show('fmcw')">
+        <b>FMCW pipeline (GNU Radio + Python)</b>
+        <span>IQ → dechirp → beat FFT → 2D range-Doppler map (128×512) → CFAR detection → micro-Doppler spectrogram (128×300)</span>
+      </div>
+      <div class="box blue wide" onclick="show('csi')">
+        <b>CSI pipeline (per ESP32S3 node)</b>
+        <span>Raw CSI amplitude → linear interpolation → (300×52) matrix → per-subcarrier z-score normalise → median filter → vertical motion index</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="layer-row">
+    <div class="layer-label">Feature extraction</div>
+    <div class="boxes">
+      <div class="box purple wide" onclick="show('fmcwfeat')">
+        <b>FMCW gait features</b>
+        <span>Cadence · stride symmetry · sway amplitude · torso/limb ratio · micro-Doppler entropy · step regularity</span>
+      </div>
+      <div class="box blue wide" onclick="show('csifeat')">
+        <b>CSI activity features</b>
+        <span>Amplitude variance · vertical motion energy · transition event count · room occupancy · CSI subcarrier correlation</span>
+      </div>
+      <div class="box amber" onclick="show('wearfeat')">
+        <b>Wearable features</b>
+        <span>Jerk RMS · step count · HRV (RMSSD) · bout durations · env context</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <svg class="arr-svg" viewBox="0 0 580 18" preserveAspectRatio="none"><line x1="130" y1="0" x2="130" y2="18" stroke="var(--color-border-secondary)" stroke-width="0.8"/><line x1="360" y1="0" x2="360" y2="18" stroke="var(--color-border-secondary)" stroke-width="0.8"/><line x1="530" y1="0" x2="530" y2="18" stroke="var(--color-border-secondary)" stroke-width="0.8"/></svg>
+  </div>
+
+  <div class="layer-row">
+    <div class="layer-label">AI inference streams</div>
+    <div class="boxes">
+      <div class="box coral" onclick="show('cnn1')">
+        <b>FMCW micro-Doppler CNN</b>
+        <span>4-layer conv · (128×300) input · gait embedding (64-d)</span>
+      </div>
+      <div class="box pink wide" onclick="show('fusion')">
+        <b>Multimodal fusion module</b>
+        <span>Cross-modal attention (FMCW ↔ CSI room embeddings) · modality gating · 128-d fused representation</span>
+      </div>
+      <div class="box coral" onclick="show('resnet')">
+        <b>Modified ResNet18 (×3 nodes)</b>
+        <span>Single-channel · (300×52) input · fall prob + activity class · 3-stage fine-tuning</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <svg class="arr-svg" viewBox="0 0 580 18" preserveAspectRatio="none"><line x1="290" y1="0" x2="290" y2="18" stroke="var(--color-border-secondary)" stroke-width="0.8"/></svg>
+  </div>
+
+  <div class="layer-row">
+    <div class="layer-label">Cascade classifiers</div>
+    <div class="boxes">
+      <div class="box red" onclick="show('fall')">
+        <b>Fall / near-fall detector</b>
+        <span>3s window · 0.5s slide · p &gt; 0.85 → alert · Priority 1</span>
+      </div>
+      <div class="box green" onclick="show('adhere')">
+        <b>Exercise adherence</b>
+        <span>10s window · LiFE exercise recognition · replaces EARS self-report · Priority 2</span>
+      </div>
+      <div class="box teal wide" onclick="show('gait')">
+        <b>Gait quality monitor + 7-day predictor</b>
+        <span>Personal autoencoder baseline · z-score anomaly · XGBoost mobility decline (7-day horizon) · Priority 3/4</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <svg class="arr-svg" viewBox="0 0 580 18" preserveAspectRatio="none"><line x1="290" y1="0" x2="290" y2="18" stroke="var(--color-border-secondary)" stroke-width="0.8"/></svg>
+  </div>
+
+  <div class="layer-row">
+    <div class="layer-label">Audit layer</div>
+    <div class="boxes">
+      <div class="box gray full" onclick="show('chain')">
+        <b>Hyperledger Fabric — permissioned blockchain</b>
+        <span>Hash(alert + risk_score + timestamp) · Hash(clinician_action + alert_id) · tamper-evident · EU AI Act compliance · local node on Dell T2</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <svg class="arr-svg" viewBox="0 0 580 18" preserveAspectRatio="none"><line x1="290" y1="0" x2="290" y2="18" stroke="var(--color-border-secondary)" stroke-width="0.8" marker-end="url(#a)"/></svg>
+  </div>
+
+  <div class="layer-row">
+    <div class="layer-label">Clinician interface</div>
+    <div class="boxes">
+      <div class="box green full" onclick="show('ui')">
+        <b>Clinical dashboard</b>
+        <span>Daily risk score + trend · gait quality summary · exercise adherence heatmap · room-level activity map · SHAP attributions · FAST booster trigger</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="detail" id="d-usrp">
+  <h3>USRP N210 — Active FMCW Radar</h3>
+  <p>The primary high-fidelity sensing node. Transmits a linear chirp waveform (f₀=2.4 GHz or 5.8 GHz, B=200 MHz, T_c=1 ms) and receives reflected returns simultaneously using antenna isolation. Produces 10 range-Doppler maps per second. <b>RF isolation from ESP32 nodes:</b> operate USRP on 5.8 GHz band or upper 2.4 GHz channel (ch.11) to avoid CSI corruption on the ESP32 nodes. Coverage: main living room (6–8 m range). Cannot penetrate multiple walls reliably — this limitation is solved by the ESP32 multi-room layer.</p>
+  <div style="margin-top:8px;"><span class="tag teal">GNU Radio</span><span class="tag teal">UHD 4.x driver</span><span class="tag teal">FMCW waveform</span><span class="tag teal">micro-Doppler</span></div>
+</div>
+
+<div class="detail" id="d-esp">
+  <h3>ESP32S3 Passive WiFi CSI Nodes (Chen et al. 2024)</h3>
+  <p>Three nodes deployed in bedroom, bathroom, and kitchen — rooms the USRP cannot reliably cover. Each ESP32S3 sends Ping packets to the home router at 100 Hz and receives CSI embedded in the Ping reply. <b>Cost:</b> ~$10 AUD per node including external antenna. <b>Data:</b> 52 OFDM subcarrier amplitudes per packet. Phase is discarded (single-antenna phase noise, per Chen et al.). Receives from existing home WiFi router — no new transmitter hardware required. <b>Key limitation:</b> models trained per-room require separate personalisation due to environment-specific multipath.</p>
+  <div style="margin-top:8px;"><span class="tag blue">ESP32S3 chip</span><span class="tag blue">802.11n</span><span class="tag blue">2.4 GHz</span><span class="tag blue">52 subcarriers</span><span class="tag blue">MQTT streaming</span></div>
+</div>
+
+<div class="detail" id="d-iot">
+  <h3>IoT Wearable + Environmental Sensors</h3>
+  <p>Wrist-worn IMU (100 Hz, 3-axis accelerometry + gyroscope) provides ground-truth cadence for cross-modal validation and jerk RMS for near-fall detection. Heart rate variability (RMSSD) serves as a fatigue proxy for next-day risk elevation. Environmental sensors (PIR × 4 rooms, door contacts, bedside/bathroom pressure mat) provide room-level context without identifiable video. All BLE to edge hub. The wearable layer is the only modality requiring participant action — kept minimal to preserve compliance.</p>
+  <div style="margin-top:8px;"><span class="tag amber">BLE 5.0</span><span class="tag amber">Zigbee (env sensors)</span><span class="tag amber">100 Hz IMU</span><span class="tag amber">HRV</span></div>
+</div>
+
+<div class="detail" id="d-hub">
+  <h3>Edge Hub — Privacy Enforcement Point</h3>
+  <p>The Raspberry Pi 4B is the hard privacy boundary. <b>Raw RF data and raw accelerometry never leave this device.</b> Only feature vectors (compact numerical summaries, not reconstructable into RF signals) are transmitted to the cloud AI layer over TLS. This is a system constraint, not a configuration option. The hub manages NTP synchronisation across all streams (target: ≤50 ms inter-stream error), MQTT ingestion from ESP32 nodes, UHD streaming from USRP, and BLE gateway for wearables.</p>
+  <div style="margin-top:8px;"><span class="tag gray">Privacy-by-design</span><span class="tag gray">NTP sync</span><span class="tag gray">MQTT broker</span><span class="tag gray">TLS egress</span></div>
+</div>
+
+<div class="detail" id="d-fmcw">
+  <h3>FMCW Signal Processing Pipeline (GNU Radio)</h3>
+  <p>Raw IQ samples (complex64, 20 MS/s) flow from UHD source → dechirp (multiply with time-delayed TX copy) → low-pass filter → range FFT (N=512, Hann window) per chirp → stack 128 chirps into range-time matrix → Doppler FFT across slow-time → range-Doppler map (128×512). Ten maps/second are produced. A micro-Doppler spectrogram (128 Doppler bins × 300 time bins) is extracted by summing energy across range bins containing a detected human target (CFAR, 12 dB SINR threshold). This spectrogram is the CNN input. Parallel scalar feature extraction runs on the same map stack.</p>
+  <div style="margin-top:8px;"><code>gnuradio.uhd.usrp_source</code> → <code>fmcw_dechirp</code> → <code>fft_vcc</code> → <code>numpy 2D FFT</code> → <code>cfar_detector</code></div>
+</div>
+
+<div class="detail" id="d-csi">
+  <h3>CSI Processing Pipeline (Chen et al. approach, adapted)</h3>
+  <p>Each 3-second window of raw CSI packets (variable ~80–100 received) is resampled to exactly 300 packets via linear interpolation — the standardisation method of Chen et al. Amplitude matrix (300×52) is extracted; phase is discarded. Per-subcarrier z-score normalisation removes static multipath (the DC component of the channel). A 5-tap median filter along the time axis suppresses spike noise. A vertical motion index is computed as the amplitude-weighted sum across subcarriers (weights estimated from calibration data showing which subcarriers are most sensitive to vertical body displacement, per the t-SNE finding of Chen et al.).</p>
+  <div style="margin-top:8px;"><span class="tag blue">Linear interpolation resampling</span><span class="tag blue">Amplitude only</span><span class="tag blue">Per-subcarrier z-score</span><span class="tag blue">Vertical motion index</span></div>
+</div>
+
+<div class="detail" id="d-fmcwfeat">
+  <h3>FMCW Gait Feature Vector</h3>
+  <p>Extracted per 30-second window (300 range-Doppler maps): <b>cadence</b> (peaks/min in Doppler periodicity); <b>stride symmetry ratio</b> (Doppler energy balance between left/right limb returns); <b>torso-to-limb Doppler energy ratio</b> (proxy for upper body sway); <b>micro-Doppler entropy</b> per frequency band; <b>sway amplitude</b> (lateral Doppler variation during stance phases); <b>step regularity</b> (autocorrelation of stride sequence). These 6 primary features + derived statistics (CV, trend slope) form the 12-element daily summary used by the XGBoost 7-day predictor.</p>
+</div>
+
+<div class="detail" id="d-csifeat">
+  <h3>CSI Activity Features (Room-Level)</h3>
+  <p>Produced per 3-second window per active ESP32 node: <b>amplitude variance</b> across the (300×52) matrix (overall motion energy proxy); <b>vertical motion energy ratio</b> using the calibrated subcarrier weight vector; <b>transition event count</b> (high-variance spikes in amplitude — sit-to-stand, stand-to-sit); <b>room occupancy state</b> (thresholded variance, consistent with PIR); <b>subcarrier correlation structure</b> (changes when body position changes vs when it doesn't). The t-SNE finding from Chen et al. motivates the vertical-motion emphasis: CSI at 2.4 GHz most strongly encodes vertical body displacement.</p>
+</div>
+
+<div class="detail" id="d-wearfeat">
+  <h3>Wearable Feature Vector</h3>
+  <p>16-element vector computed per 30-second window: jerk RMS (sensitive to postural perturbations, key near-fall indicator); step detection-derived cadence (cross-modal validation against FMCW cadence); stride time mean and CV; HRV RMSSD and pNN50 (fatigue proxies for next-day risk elevation); activity bout duration (longest continuous movement bout); sedentary fraction; environmental context flags (time-of-day, room as inferred from PIR, door event in past 60s).</p>
+</div>
+
+<div class="detail" id="d-cnn1">
+  <h3>FMCW Micro-Doppler CNN (4-layer)</h3>
+  <p>Input: (B, 1, 128, 300) micro-Doppler spectrogram. Four conv blocks (32→64→128→64 channels) with max-pooling and batch normalisation, followed by adaptive average pooling to (4×4). Output: 64-dimensional gait embedding + activity logits. The embedding encodes gait quality in a compact form suitable for the personalised autoencoder and fusion module. Architecture is intentionally shallow given dataset size constraints (20–50 participants in Phase 1–3) — a ResNet18 backbone would overfit without extensive augmentation.</p>
+</div>
+
+<div class="detail" id="d-resnet">
+  <h3>Modified ResNet18 CSI Classifier (Chen et al. architecture)</h3>
+  <p>Adopts the Chen et al. approach exactly: first conv layer modified to accept single-channel (300×52) input, pretrained ImageNet weights averaged across RGB channels for initialisation, classification head adapted for stroke-specific label set. <b>Three-stage fine-tuning:</b> (1) domain pre-adaptation on Chen et al. + public CSI datasets with backbone layers 1–3 frozen; (2) population fine-tuning on Phase 2 older adult data with layers 1–2 frozen; (3) participant personalisation on first 2 weeks of home monitoring data with only classification heads trained. Falls cluster near sit-to-stand/stand-to-sit in feature space (per Chen et al. t-SNE) — a direct clinical match to the highest-risk activities for stroke survivors.</p>
+  <div style="margin-top:8px;"><span class="tag coral">ResNet18 backbone</span><span class="tag coral">3-stage fine-tuning</span><span class="tag coral">Binary fall output</span><span class="tag coral">Per-node personalisation</span></div>
+</div>
+
+<div class="detail" id="d-fusion">
+  <h3>Multimodal Fusion Module (Cross-Modal Attention)</h3>
+  <p>The FMCW gait embedding (64-d) serves as the query; the room CSI embeddings (R×64) serve as keys and values in a multi-head attention (4 heads). Attended CSI representation (64-d) is concatenated with the FMCW embedding, wearable features (16-d), and environmental context (8-d), totalling 152-d. A learned modality gating MLP (softmax over 4 modality weights) adaptively downweights modalities with poor data quality (e.g., a room node with no occupancy). Final projection to 128-d fused representation feeds all three downstream classifiers. <b>Key design choice:</b> if a room node is unoccupied, its embedding is zeroed and the gating weight collapses to 0 — the fusion is robust to partial sensor coverage.</p>
+</div>
+
+<div class="detail" id="d-fall">
+  <h3>Fall / Near-Fall Detector (Priority 1)</h3>
+  <p>Binary MLP head (128→64→1, sigmoid) on the fused representation, operating on 3-second windows with 0.5-second slide. Alert threshold: p_fall > 0.85 (tuned for specificity ≥0.90 to prevent alert fatigue). Near-falls (large Doppler transients not followed by low-acceleration sustained state) are included in the positive class. <b>On trigger:</b> immediate clinician dashboard alert; SHA-256 hash of (timestamp, participant_id, risk_score, top SHAP features) written to Hyperledger Fabric ledger. This is the most time-critical inference path — target latency &lt;500 ms from event to alert.</p>
+</div>
+
+<div class="detail" id="d-adhere">
+  <h3>Exercise Adherence Classifier (Priority 2)</h3>
+  <p>Replaces the self-report Exercise Adherence Rating Scale (EARS) with objective RF-derived measurement. Multi-class MLP on 10-second windows, trained to recognise the micro-Doppler and CSI signatures of LiFE exercises: tandem walking, lateral stepping, heel raises, sit-to-stand repetitions, wall push-ups. Output: hourly exercise log aggregated to a daily adherence score (0–24, matching EARS scale for direct comparability with FAST trial data). The t-SNE insight from Chen et al. directly motivates this: sit-to-stand repetitions have a distinctive vertical-motion CSI signature separable from normal transitions.</p>
+</div>
+
+<div class="detail" id="d-gait">
+  <h3>Gait Quality Monitor + 7-Day Mobility Predictor (Priority 3/4)</h3>
+  <p><b>Autoencoder (Priority 3):</b> Trained on participant's first 2 weeks of FMCW gait features (their personal "normal"). Reconstruction error on new 30-second windows is z-scored against the calibration distribution. z &gt; 2.0 sustained for ≥3 consecutive windows → elevated risk flag. This is the longitudinal monitoring signal that FAST could not capture — detecting gradual decline before a fall occurs. <b>XGBoost (Priority 4):</b> 12 daily summary features → P(walking speed decline &gt;0.1 m/s in next 7 days). Trained on Phase 3 longitudinal data aligned with clinician assessments. SHAP values decompose every prediction for clinician transparency.</p>
+</div>
+
+<div class="detail" id="d-chain">
+  <h3>Hyperledger Fabric — Audit Layer</h3>
+  <p>A permissioned local blockchain node on the Dell T2 host. Only alert hashes and clinician response hashes are written — not raw data or feature vectors. <b>Value proposition:</b> tamper-evident record of what the AI predicted and what the clinician did in response. Required for regulatory accountability under EU AI Act (high-risk AI classification) and TGA/FDA oversight. <b>Not used for:</b> raw data storage, federated learning coordination, or access control (standard healthcare IAM handles these). The ledger is append-only; older entries cannot be modified even by the system administrator.</p>
+</div>
+
+<div class="detail" id="d-ui">
+  <h3>Clinician Dashboard</h3>
+  <p>Surfaces per participant: daily risk score with 7-day sparkline trend; gait quality summary (cadence, symmetry, sway — FMCW-derived, with comparison to participant's own baseline from week 1); exercise adherence heatmap (calendar view, CSI+FMCW combined); room-level activity map showing last 24h occupancy patterns by room (ESP32S3-derived); SHAP feature attribution bar chart for each alert; one-click FAST booster session scheduling integrated with the clinician's calendar. <b>Alert fatigue design:</b> specificity threshold set at ≥0.90, priority tiering ensures fall alerts are visually distinct from gait trend alerts, maximum 2 non-emergency alerts per participant per day.</p>
+</div>
+
+</div>
+<script>
+function show(id){
+  var all=document.querySelectorAll('.detail');
+  var el=document.getElementById('d-'+id);
+  var wasOpen=el.classList.contains('show');
+  all.forEach(function(d){d.classList.remove('show');});
+  if(!wasOpen)el.classList.add('show');
+}
+</script>

@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rf-sensing-falls.local/schemas/health_snapshot.schema.json",
+  "title": "Truthful platform health snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "api_version",
+    "snapshot_id",
+    "collected_at_utc",
+    "environment",
+    "collector",
+    "aggregation_policy",
+    "overall_status",
+    "capability_matrix_ref",
+    "n210_capability_matrix",
+    "subjects"
+  ],
+  "properties": {
+    "api_version": {"const": "v1"},
+    "snapshot_id": {"$ref": "#/$defs/uuid"},
+    "collected_at_utc": {"type": "string", "format": "date-time"},
+    "environment": {"enum": ["DEVELOPMENT", "SILENT_PILOT", "CLINICAL_EVALUATION"]},
+    "collector": {"$ref": "#/$defs/collector"},
+    "aggregation_policy": {"$ref": "#/$defs/aggregation"},
+    "overall_status": {"$ref": "#/$defs/healthStatus"},
+    "capability_matrix_ref": {"$ref": "#/$defs/artifactRef"},
+    "n210_capability_matrix": {"$ref": "#/$defs/n210Capabilities"},
+    "subjects": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {"$ref": "#/$defs/subject"}
+    }
+  },
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "healthStatus": {"enum": ["HEALTHY", "DEGRADED", "FAILED", "UNKNOWN"]},
+    "checkStatus": {"enum": ["PASS", "WARN", "FAIL", "UNKNOWN", "NOT_APPLICABLE"]},
+    "collector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["service", "version", "host_id"],
+      "properties": {
+        "service": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{1,63}$"},
+        "version": {"type": "string", "minLength": 1, "maxLength": 64},
+        "host_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{2,63}$"}
+      }
+    },
+    "aggregation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "critical_check_ids"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]{1,63}$"},
+        "version": {"type": "integer", "minimum": 1},
+        "critical_check_ids": {"type": "array", "minItems": 1, "maxItems": 128, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9_.]{1,127}$"}}
+      }
+    },
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "sha256"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{1,63}$"},
+        "version": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "n210Capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["available_from_stopped_probe", "available_from_runtime_instrumentation", "derived_from_host_or_samples", "unavailable_on_device"],
+      "properties": {
+        "available_from_stopped_probe": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["device_identity", "firmware_version", "fpga_version", "daughterboard_identity", "frontend_ranges", "clock_sources", "time_sources", "lock_sensors"]}
+        },
+        "available_from_runtime_instrumentation": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["configured_frequency", "configured_sample_rate", "configured_gain", "antenna_ports", "sample_counter", "rx_overflow_count", "tx_underflow_count", "late_command_count", "sequence_discontinuities", "lo_lock"]}
+        },
+        "derived_from_host_or_samples": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["network_throughput", "packet_loss", "round_trip_time", "clipped_sample_fraction", "noise_floor", "signal_power", "quality_score"]}
+        },
+        "unavailable_on_device": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": {"enum": ["cpu_utilisation", "ram_utilisation", "process_list", "filesystem_utilisation"]},
+          "allOf": [
+            {"contains": {"const": "cpu_utilisation"}},
+            {"contains": {"const": "ram_utilisation"}},
+            {"contains": {"const": "process_list"}},
+            {"contains": {"const": "filesystem_utilisation"}}
+          ]
+        }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subject_type", "subject_id", "status", "observed_at_utc", "stale_after_seconds", "checks"],
+      "properties": {
+        "subject_type": {"enum": ["host", "service", "usrp", "pipeline", "dependency", "model", "configuration", "security"]},
+        "subject_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{1,127}$"},
+        "status": {"$ref": "#/$defs/healthStatus"},
+        "observed_at_utc": {"type": "string", "format": "date-time"},
+        "stale_after_seconds": {"type": "integer", "minimum": 1, "maximum": 86400},
+        "checks": {"type": "array", "minItems": 1, "maxItems": 512, "items": {"$ref": "#/$defs/check"}}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "reference", "captured_at_utc", "disruptive"],
+      "properties": {
+        "kind": {"enum": ["PSUTIL", "PROCFS", "SYSTEMD", "UHD_PROBE", "UHD_RUNTIME", "ACQUISITION_PROCESS", "NETWORK_INTERFACE", "SAMPLE_ANALYSIS", "REGISTRY", "CONFIG_STORE", "DERIVATION"]},
+        "reference": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "^(?!.*\\.\\./).+$"},
+        "captured_at_utc": {"type": "string", "format": "date-time"},
+        "disruptive": {"type": "boolean"}
+      }
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["check_id", "availability", "status", "value", "unit", "observed_at_utc", "freshness_seconds", "source", "evidence_refs"],
+      "properties": {
+        "check_id": {"type": "string", "pattern": "^[a-z][a-z0-9_.]{1,127}$"},
+        "availability": {"enum": ["available", "derived", "unavailable"]},
+        "status": {"$ref": "#/$defs/checkStatus"},
+        "value": {
+          "oneOf": [
+            {"type": ["string", "number", "integer", "boolean", "null"], "maxLength": 512},
+            {"type": "array", "maxItems": 256, "items": {"type": ["string", "number", "integer", "boolean"]}}
+          ]
+        },
+        "unit": {"oneOf": [{"type": "null"}, {"type": "string", "minLength": 1, "maxLength": 32}]},
+        "observed_at_utc": {"type": "string", "format": "date-time"},
+        "freshness_seconds": {"type": "number", "minimum": 0, "maximum": 86400},
+        "source": {"$ref": "#/$defs/source"},
+        "derivation": {"$ref": "#/$defs/artifactRef"},
+        "source_measurement_ids": {"type": "array", "minItems": 1, "maxItems": 64, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9_.]{1,127}$"}},
+        "reason": {"type": "string", "minLength": 1, "maxLength": 512},
+        "evidence_refs": {"type": "array", "maxItems": 32, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "^(?!/)(?!.*\\.\\./).+$"}}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"availability": {"const": "available"}}, "required": ["availability"]},
+          "then": {"not": {"properties": {"value": {"type": "null"}}}}
+        },
+        {
+          "if": {"properties": {"availability": {"const": "derived"}}, "required": ["availability"]},
+          "then": {"required": ["derivation", "source_measurement_ids"], "not": {"properties": {"value": {"type": "null"}}}}
+        },
+        {
+          "if": {"properties": {"availability": {"const": "unavailable"}}, "required": ["availability"]},
+          "then": {"required": ["reason"], "properties": {"value": {"type": "null"}, "status": {"enum": ["UNKNOWN", "NOT_APPLICABLE"]}}}
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,49 @@
+api_version: v1
+id: start_live_sdr
+display_name: Start supervised live SDR detection
+version: 1
+safety_class: rf_transmission
+required_scopes: [detection:read, detection:start, detection:stop, detection:emergency_stop, rf:transmit]
+approval_policy: {mode: single_operator, reason_required: true, reference_required: true, distinct_approvers: false, approval_ttl_seconds: 1800, minimum_deliberation_seconds: 60}
+allowed_environments: [DEVELOPMENT]
+allowed_source_states: [STOPPED, PREFLIGHT, FAILED]
+locks: [pipeline:detection, usrp:n210_primary]
+timeout_seconds: 120
+dry_run_supported: true
+idempotency: {scope: workflow_and_parameters, duplicate_behavior: return_existing}
+parameters:
+  profile_id: {type: string, required: true, enum: [lab_cw_2462], pattern: "^[a-z][a-z0-9_]{1,63}$", max_length: 64, default: lab_cw_2462}
+  tx_gain_db: {type: number, required: true, minimum: 0, maximum: 15, default: 0}
+  rx_gain_db: {type: number, required: true, minimum: 0, maximum: 35, default: 20}
+  maximum_duration_seconds: {type: integer, required: true, minimum: 1, maximum: 3600, default: 300}
+steps:
+  - id: start_supervised_live_pipeline
+    action: pipeline.start_live_sdr
+    arguments:
+      profile_id: {parameter_ref: profile_id}
+      tx_gain_db: {parameter_ref: tx_gain_db}
+      rx_gain_db: {parameter_ref: rx_gain_db}
+      maximum_duration_seconds: {parameter_ref: maximum_duration_seconds}
+    depends_on: []
+    timeout_seconds: 90
+    retry: {max_attempts: 1, backoff_seconds: 0}
+    cancellable: true
+    on_failure: rollback
+postconditions:
+  - {subject: platform.state, operator: eq, expected: RUNNING}
+rollback:
+  - action: pipeline.emergency_stop
+    arguments: {reason: {literal: "Automatic RF stop after failed supervised start"}}
+    timeout_seconds: 20
+approval_binding:
+  binding_mode: runtime
+  workflow_digest_bound: true
+  parameters_bound: true
+  environment_bound: true
+  reason_and_reference_bound: true
+  approver_sessions_bound: true
+audit:
+  event_types: [workflow.requested, workflow.step.completed, workflow.completed, workflow.failed, workflow.approval.decided]
+  redact_fields: [authorization, token]
+  reason_field: reason
+

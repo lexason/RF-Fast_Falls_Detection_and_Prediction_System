@@ -1,0 +1,50 @@
+# Raw IQ captures never leave this machine / never enter git
+data/raw/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+dashboard/frontend/node_modules/
+
+# Local control-plane state contains development sessions and audit runtime.
+artifacts/control_plane/runtime/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local secrets (.env.template stays tracked as the documented shape; the real
+# file holds the live dev bootstrap secret and must never enter git history)
+.env
+
+# OS
+.DS_Store
+
+# Claude Code harness session state
+.claude/
+
+# Experiment artifacts that are regenerated, not authored
+*.onnx
+*.pt
+*.pth
+
+# Small, checksum-bound DEVELOPMENT bundles are reviewable repository artifacts.
+!models/production/*.onnx
+!models/candidates/**/*.onnx
+
+# Large regenerable derived arrays -- rerun models/build_spectrogram_dataset.py to recreate.
+# Unlike data/processed/*.parquet (small, feature/label tables), this is a ~100MB raw patch
+# stack; not worth tracking in git history since it's fully reproducible from data/raw/.
+data/processed/g3_spectrogram_patches.npy
+
+# Runtime service logs (transient; tx_log.csv is the deliberate audit trail, kept)
+logs/dashboard.log
+logs/cw_doppler_live.log
+logs/spectrogram_service.log
+logs/soak_test_output.log
+logs/soak_flowgraph.log
+logs/soak_spectrogram.log
+logs/realtime_classifier*.log
+logs/posture_state_machine.log

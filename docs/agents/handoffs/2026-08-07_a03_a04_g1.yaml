@@ -1,0 +1,79 @@
+handoff_id: "97f08aca-da8c-46d7-aa98-f4bf34271790"
+agent_id: "A03_RF_SYSTEMS_ARCHITECT+A04_SDR_HARDWARE_AND_BRINGUP"
+timestamp_utc: "2026-08-07T03:55:26Z"
+task:
+  objective: "Safe read-only G0/G1 host, network, UHD, N210, and UBX-40 inspection."
+  scope: "/home/sdr-research/carat_research and CARAT host/device evidence only"
+inputs:
+  files:
+    - "RF_SENSING_FALLS_MULTI_AGENT_FRAMEWORK_v1_1.md"
+    - "CLAUDE.md"
+    - "STATE.md"
+    - "config/system.yaml"
+    - "config/probe.txt"
+    - "sdr/cw_doppler_tx_rx.py"
+    - "tests/test_g0_hardware.py"
+  data_versions: []
+  model_versions: []
+  assumptions:
+    - "No benchmark, loopback, reconfiguration, firmware change, or intentional test transmission was authorised."
+work_performed:
+  commands:
+    - "Read all 3505 framework lines."
+    - "Captured OS, Python, active UHD/GNU Radio versions, interfaces, routes, link state, device discovery, and probe identity."
+    - "Inspected historical benchmark/loopback claims and CARAT RF scripts without running them."
+  files_changed: []
+  analyses:
+    - "Compared current evidence with every framework v1.1 G1 criterion."
+findings:
+  confirmed:
+    - "Ubuntu 24.04.4, Python 3.12.3, UHD 4.9.0.HEAD, and GNU Radio 3.10.9.2 are active."
+    - "N210r4 FW 12.4/FPGA 11.1 and UBX-40 v2 identity were observed."
+    - "enp128s31f6 is 1 Gb/s full duplex; observed MTU 1500 conflicts with legacy configuration 9000."
+    - "UBX full-duplex ports are TX/RX for TX and RX2 for RX."
+    - "Configured antennas are labelled 2.4-2.5 GHz while the legacy carrier is 5.8 GHz."
+    - "No external attenuator-chain inventory or current v1.1 raw benchmark evidence was found."
+    - "Active /usr/local UHD 4.9 coexists with distribution UHD 4.6 packages."
+  uncertain:
+    - "Physical component condition, geometry, cable losses, conducted power, EIRP, occupied bandwidth, EME, and current RF approval."
+    - "Reproducibility of historical streaming claims under the current host state."
+  defects:
+    - "RF-G1-001 critical: current RF/EME approval evidence absent."
+    - "RF-G1-002 high: CARAT has no enforced exclusive N210 owner."
+    - "RF-G1-003 high: 5.8 GHz antenna mismatch."
+    - "RF-G1-004 high: no verified external attenuated conducted-loopback design."
+    - "RF-G1-005 high: current clipping/error/repeatability evidence absent."
+    - "RF-G1-006 medium: MTU configuration drift."
+    - "RF-G1-007 medium: mixed UHD installation provenance."
+risks:
+  new:
+    - "Unsafe or non-compliant CARAT RF start."
+    - "Invalid evidence from non-exclusive hardware ownership."
+    - "Antenna mismatch affects RF validity and compliance."
+  changed:
+    - "N210 and UBX electronic identity uncertainty resolved."
+evidence:
+  logs:
+    - "docs/evidence/diagnostics/2026-08-07/"
+  reports:
+    - "config/probe.txt"
+  plots: []
+  checksums:
+    - "config/probe.txt: 82efbce1ed528f5d94a3e82f7c191cb1c02e16efa292c42cc6d3e40bd6680518"
+decision:
+  status: "FAIL"
+  rationale: "Identity and GigE are observed, but current exclusive benchmark, attenuated loopback, clipping/error/repeatability, suitable antennas, and RF/OTA approval are absent."
+next_actions:
+  required:
+    - "Do not run another N210 command without explicit task authority and exclusive ownership."
+    - "Complete component inventory, RF/EME review, 2.4 GHz candidate approval, and measured attenuation plan."
+    - "Resolve UHD and MTU drift before bounded receive-only testing."
+  optional:
+    - "Develop synthetic and replay fixtures offline."
+reviewers_required:
+  - "A00_MASTER_ORCHESTRATOR"
+  - "A03"
+  - "A04"
+  - "A12"
+  - "Laboratory RF compliance owner"
+  - "A15_RED_TEAM"

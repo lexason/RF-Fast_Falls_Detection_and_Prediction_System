@@ -1,0 +1,99 @@
+handoff_id: "f7f386c4-a342-45fd-80c3-8d93e2de7114"
+agent_id: "A07_A08_A09_A10_ML_REASSESSMENT"
+timestamp_utc: "2026-08-07T08:16:03Z"
+task:
+  objective: "Diagnose the missed pilot fall labels and build the smallest defensible Product-A DEVELOPMENT experiment without promoting it."
+  scope: "Repository-local offline data/model analysis; no serving change, RF action, alerting, or clinical claim."
+inputs:
+  files:
+    - "data/processed/g3_features_v2_conflict_free.parquet"
+    - "data/raw/2026-07-18_fall_gain5/manifest.json"
+    - "data/raw/2026-07-18_fall_gain5/2026-07-18_fall_gain5.sigmf-data"
+    - "data/labels/2026-07-18_fall_gain5.jsonl"
+    - "models/production/metadata.json"
+    - "models/candidates/rf-sensing-falls-v6-dev-003/metadata.json"
+  data_versions:
+    - "g3_features_v2_conflict_free sha256:b8797febb691ce177c2e6f34750f3c61cc15bd85f98641cf340e97b6e5ccdff4"
+    - "2026-07-18_fall_gain5 sigmf-data sha512:30bfc1304dc10cd274503bcca89306753c7d80166c74093e4bf98f0ae735086e170a1db98cc1cddd589616cd56721559f9400a2c799793e415b47e535d6a61db"
+  model_versions:
+    - "rf-sensing-falls-v3-legacy-baseline"
+    - "rf-sensing-falls-v6-dev-003"
+    - "rf-sensing-falls-product-a-physics6-dev-001"
+  assumptions:
+    - "All scores and thresholds are DEVELOPMENT diagnostics only."
+    - "The inspected pilot clip is target error analysis, not training, calibration, or test evidence."
+work_performed:
+  commands:
+    - ".venv/bin/python models/train_product_a_candidate.py --candidate-id rf-sensing-falls-product-a-physics6-dev-001"
+    - ".venv/bin/python models/evaluate_product_a_development.py --candidate-id rf-sensing-falls-product-a-physics6-dev-001"
+    - ".venv/bin/python models/train_product_a_candidate.py --candidate-id rf-sensing-falls-product-a-physics6-repro-001"
+    - "Byte comparison and SHA-256 check of the two exported model artifacts"
+    - ".venv/bin/pytest -q tests/unit/test_product_a_candidate.py"
+  files_changed:
+    - "models/product_a_logistic.py"
+    - "models/train_product_a_candidate.py"
+    - "models/evaluate_product_a_development.py"
+    - "tests/unit/test_product_a_candidate.py"
+    - "artifacts/adjudications/2026-07-18_fall_gain5-review-v1.json"
+    - "models/candidates/rf-sensing-falls-product-a-physics6-dev-001/"
+    - "models/candidates/rf-sensing-falls-product-a-physics6-repro-001/"
+    - "artifacts/evaluations/rf-sensing-falls-product-a-physics6-dev-001-grouped-development-v1.json"
+  analyses:
+    - "Grouped leave-one-day-or-geometry-out physics6 logistic regression"
+    - "Verified-only primary analysis and legacy lie-down sensitivity analysis"
+    - "Pilot episode/fragment, direction-sign, and centered-window-overlap audit"
+    - "Deterministic artifact rebuild"
+findings:
+  confirmed:
+    - "The source's two automatic fall labels are not evidence of two independent falls; contemporaneous records document one uncontrolled pilot episode."
+    - "The two centered three-second windows overlap by 1.45 seconds and direction diagnostics have opposite signs."
+    - "The cleaned transient subset has 216 windows: 30 falls and 186 hard negatives; all 31 lie-down windows are unverified."
+    - "Primary verified-only fall-vs-sit/stand AUROC is 0.58125 and fall-vs-lie-down performance is not estimable."
+    - "Secondary legacy-label AUROC is 0.67742; fixed 0.5 recall is 0.60, specificity 0.74731, and PPV 0.27692."
+    - "The Product-A artifact is byte-reproducible and has a null fall threshold."
+  uncertain:
+    - "Pilot fragment class truth remains unresolved without independent source-grounded adjudication."
+    - "Generalisation to other people, rooms, geometries, and real falls is unknown."
+  defects:
+    - id: "G3-LABEL-UNIT-001"
+      status: "CONTAINED"
+      defect: "Two automatic fragments from one pilot episode had been interpreted as two independent labeled falls."
+      correction: "Quarantine sidecar limits use to error analysis and cryptographically binds source artifacts."
+    - id: "G3-MODEL-001"
+      status: "OPEN"
+      defect: "Current evidence cannot validate fall-vs-lie-down detection or an operational threshold."
+      mandatory_correction: "Collect verified independent participants/rooms/lie-down hard negatives with fixed calibration and final-test splits."
+risks:
+  new:
+    - "Optimising a model to make both inspected pilot fragments exceed a threshold would create target leakage."
+  changed:
+    - "A deterministic Product-A experiment now exists, but it does not reduce the G3 gate status."
+evidence:
+  logs:
+    - "tests/unit/test_product_a_candidate.py: 4 passed"
+    - "candidate/reproduction artifact SHA-256: ab60a615fdc4c9b2ef707e57624966bd06e3264d7981da63cf28d3d796ca16f4"
+  reports:
+    - "artifacts/evaluations/rf-sensing-falls-product-a-physics6-dev-001-grouped-development-v1.json"
+    - "reports/validation/2026-08-07_tailscale_n210_g3_reassessment.md"
+  plots: []
+  checksums:
+    - "RF_SENSING_FALLS_MULTI_AGENT_FRAMEWORK_v1_1.md:82d724ee94cb79e7357caad9da6ef46d30d955746d08381138ff85fa6aa809b7"
+    - "models/product_a_logistic.py:a7d4f7725790064d618ba77552fd09d22d4f0e38fded53b2031d74bafdec0665"
+    - "models/evaluate_product_a_development.py:80420e7b6535b773d9020bd5db67d9c403343c11e808e8a1fbbc73333a844475"
+    - "evaluation:c83f8a6d1106c3ed4125f7d3e24705d9c03dbe33deeaf28dff05b8b48c49aef9"
+decision:
+  status: "FAIL"
+  disposition: "DEVELOPMENT_EXPERIMENT_ONLY"
+  framework_g3_fall_validation: "FAIL"
+  promotion_eligible: false
+  fall_decision_threshold: null
+  rationale: "The experiment is reproducible but discrimination is weak, lie-down truth is unverified, and independent calibration/final-test evidence does not exist."
+next_actions:
+  required:
+    - "Keep Product-A unserved, threshold-free, and promotion-blocked."
+    - "Collect verified lie-down and staged fall episodes using episode/phase annotations."
+    - "Fix participant/site-separated train, calibration, and final-test partitions before model selection."
+  optional:
+    - "Compare pre-specified temporal or phase-aware architectures only after the evidence design is frozen."
+reviewers_required:
+  - "A15"

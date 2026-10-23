@@ -1,0 +1,51 @@
+task_id: CARAT-20260920-001
+completed_at_utc: 2026-09-20T08:25:00Z
+disposition: REVIEW_PENDING
+implemented:
+  - professional responsive landing portal and rebuilt operations console
+  - insecure-HTTP-safe browser idempotency identifiers
+  - complete development-administrator scope coverage for registered dashboard operations
+  - state-aware workflow availability with visible reasons
+  - exact repository-local legacy process discovery and identity-revalidated stopping
+  - truthful unmanaged live-pipeline and runtime-model reconciliation
+  - real immutable candidate threshold-study workflow
+  - non-dead model controls and evidence disclosure
+  - continuous activity heartbeat plus verified activity and waterfall streams
+  - slash and non-slash operations routes
+verification:
+  frontend_build: PASS
+  workflow_dry_runs:
+    status: PASS
+    count: 14
+  remote_authenticated_api:
+    status: PASS
+    paths_checked: 21
+  websocket_event_stream: PASS
+  websocket_activity_stream: PASS
+  websocket_waterfall_stream: PASS
+  audit_integrity: PASS
+  threshold_study: PASS
+  non_hardware_tests:
+    status: PASS
+    passed: 84
+    deselected_hardware: 3
+  governance:
+    semantic_cross_artifact: PASS
+    tests_passed: 26
+controlled_actions_not_executed:
+  - RF start or stop
+  - raw-IQ capture
+  - model promotion or rollback
+  - hardware full probe while pipeline active
+live_observation:
+  portal: http://100.93.70.68:18091/
+  platform_state: DEGRADED
+  mode: LEGACY_LIVE_SDR_UNMANAGED
+  services:
+    acquisition: UNMANAGED_RUNNING
+    preprocessing: UNMANAGED_RUNNING
+    inference: UNMANAGED_RUNNING
+    event_aggregation: UNMANAGED_RUNNING
+review:
+  required: true
+  status: PENDING

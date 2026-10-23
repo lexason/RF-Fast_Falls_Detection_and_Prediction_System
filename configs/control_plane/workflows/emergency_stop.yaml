@@ -1,0 +1,32 @@
+api_version: v1
+id: emergency_stop
+display_name: Emergency stop simulation
+version: 1
+safety_class: operational
+required_scopes: [detection:emergency_stop]
+approval_policy: {mode: confirmation, reason_required: true, reference_required: false, distinct_approvers: false, approval_ttl_seconds: 0}
+allowed_environments: [DEVELOPMENT]
+allowed_source_states: [STOPPED, MAINTENANCE, PREFLIGHT, STARTING, RUNNING, DEGRADED, STOPPING, FAILED]
+locks: [pipeline:detection]
+timeout_seconds: 15
+dry_run_supported: true
+idempotency: {scope: workflow_and_parameters, duplicate_behavior: return_existing}
+parameters:
+  reason: {type: string, required: true, min_length: 10, max_length: 512}
+steps:
+  - id: emergency_stop_pipeline
+    action: pipeline.emergency_stop
+    arguments: {reason: {parameter_ref: reason}}
+    depends_on: []
+    timeout_seconds: 10
+    retry: {max_attempts: 2, backoff_seconds: 0.1}
+    cancellable: false
+    on_failure: fail
+postconditions:
+  - {subject: platform.state, operator: eq, expected: FAILED}
+rollback_not_safe_reason: Emergency stop must never restart services automatically.
+audit:
+  event_types: [workflow.requested, workflow.step.completed, workflow.completed, workflow.failed]
+  redact_fields: [authorization, token]
+  reason_field: reason
+

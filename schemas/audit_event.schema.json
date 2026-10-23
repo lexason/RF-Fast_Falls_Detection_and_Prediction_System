@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rf-sensing-falls.local/schemas/audit_event.schema.json",
+  "title": "Hash-chained control-plane audit event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["api_version", "sequence", "event_id", "timestamp", "type", "severity", "source", "correlation_id", "actor_id", "payload", "previous_hash", "event_hash"],
+  "properties": {
+    "api_version": {"const": "v1"},
+    "sequence": {"type": "integer", "minimum": 1},
+    "event_id": {"type": "string", "format": "uuid"},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "type": {"type": "string", "pattern": "^[a-z][a-z0-9_.]{2,95}$"},
+    "severity": {"enum": ["debug", "info", "warning", "error", "critical"]},
+    "source": {"const": "control-plane"},
+    "correlation_id": {"type": ["string", "null"], "maxLength": 128},
+    "actor_id": {"type": ["string", "null"], "maxLength": 64},
+    "payload": {"type": "object", "maxProperties": 128},
+    "previous_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "event_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

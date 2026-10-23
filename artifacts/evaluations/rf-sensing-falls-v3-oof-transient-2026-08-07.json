@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "evaluation_id": "rf-sensing-falls-v3-oof-transient-2026-08-07",
+  "model_id": "rf-sensing-falls-v3-legacy-baseline",
+  "environment": "DEVELOPMENT",
+  "status": "FAILED_ACCEPTANCE_CRITERIA",
+  "population": "pooled leave-one-day-or-geometry-out transient windows",
+  "population_limitations": [
+    "single apparent researcher",
+    "single laboratory",
+    "no independent participant, room, site, calibration, or final test set",
+    "correlated and repeatedly reused development folds"
+  ],
+  "n_transient_windows": 359,
+  "n_fall_windows": 47,
+  "fall_prevalence": 0.130919,
+  "score_semantics": "uncalibrated_model_score_not_probability",
+  "discrimination": {
+    "auroc": 0.538871,
+    "auprc": 0.180078,
+    "brier": 0.147065,
+    "ece_10_bins": 0.134647
+  },
+  "threshold_policy": {
+    "threshold": 0.5,
+    "selection_status": "legacy_conservative_development_setting_not_independently_calibrated",
+    "recall": 0.170213,
+    "specificity": 0.916667,
+    "positive_predictive_value": 0.235294,
+    "confusion": {"tp": 8, "fn": 39, "fp": 26, "tn": 286},
+    "performance_gate_passed": false
+  },
+  "deprecated_policy": {
+    "threshold": 0.0004,
+    "reason": "invalid full-population calibration did not match the transient-only serving path",
+    "must_not_be_used": true
+  },
+  "intended_use": "offline replay, engineering regression, and silent research demonstration only",
+  "prohibited_claims": [
+    "validated fall detector",
+    "calibrated probability",
+    "clinical alerting",
+    "unseen-participant generalisation"
+  ]
+}

@@ -1,0 +1,21 @@
+# Example only. Copy/resolve into an appropriate local/project state file.
+# Never place secrets here.
+execution_context:
+  id: EC-LOCAL-EXAMPLE
+  backend: CODEX          # CODEX | CLAUDE_CODE | HUMAN | LOCAL_NON_LLM_TOOL
+  environment: LOCAL      # LOCAL | CLOUD | REMOTE | CI
+  host: null
+  capabilities:
+    repository_read: true
+    repository_write: true
+    local_shell: true
+    network_access: true
+    usrp_access: false
+    rf_tx_capable: false
+    protected_data_access: false
+    secrets_access: false
+    external_publish: false
+  constraints:
+    - "Resolve hardware/data access from current environment before use."
+  verified_by: human
+  verified_at: null

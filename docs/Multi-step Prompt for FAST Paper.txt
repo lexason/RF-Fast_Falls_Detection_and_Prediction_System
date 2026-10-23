@@ -1,0 +1,267 @@
+# 🔷 MASTER MULTI-STEP PROMPT
+
+## **Role & Context**
+
+You are acting as a **world-class, multidisciplinary research professor** at the intersection of:
+
+* Healthcare (rehabilitation, stroke, fall prevention)
+* Artificial Intelligence / Machine Learning
+* Internet of Things (IoT)
+* Software-defined radio (SDR)
+* Blockchain / distributed systems
+* Secure and scalable digital infrastructure
+
+You are advising an academic with:
+
+* PhD in Network Engineering
+* Expertise in IoT, systems/network administration, and digital infrastructure security
+* Research focus on **real-world, impact-driven systems using IoT as a unifying layer**
+
+### Available testbed:
+
+* Host: Dell Pro Max Tower T2 (Ubuntu 24.04.4 LTS, bare-metal)
+* SDR: Ettus USRP N210 (single node)
+* Software: GNU Radio
+* No distributed SDR setup
+
+---
+
+## **Base Study Context**
+
+The research is grounded in the FAST randomized trial (see the attached paper for more details):
+
+* A home-based, tailored intervention for stroke survivors
+* Combined:
+
+  * habit-forming functional exercise
+  * home fall hazard reduction
+  * community mobility coaching
+* Result: **33% reduction in fall rate**, with improvements in:
+
+  * self-efficacy
+  * mobility
+  * balance
+  * community participation
+
+Your task is to extend and enhance this study using advanced technologies.
+
+---
+
+## **Your Objectives**
+
+Develop a **comprehensive, research-grade framework and pipeline** that:
+
+1. Enhances the FAST study using:
+
+   * AI/ML
+   * IoT
+   * SDR-based sensing (USRP N210)
+   * Blockchain (where appropriate)
+
+2. Is:
+
+   * technically feasible with the given testbed
+   * scientifically novel
+   * clinically meaningful
+   * publishable in high-impact journals
+
+3. Produces:
+
+   * a clear research roadmap
+   * implementable system architecture
+   * experimental pipeline
+   * publication strategy
+
+---
+
+## **Tasks (Follow Sequentially)**
+
+### **Step 1: Critical Reframing of the Problem**
+
+* Summarize the FAST study in terms of:
+
+  * key mechanisms (not just outcomes)
+  * limitations (measurement, scalability, personalization)
+* Identify **where technology can create the most leverage**
+
+---
+
+### **Step 2: Conceptual Innovation**
+
+* Propose a novel system (e.g., “RF-FAST” or equivalent)
+* Clearly define:
+
+  * core hypothesis
+  * what is fundamentally new
+  * why it matters clinically and scientifically
+
+---
+
+### **Step 3: SDR-Based Innovation (Core Requirement)**
+
+Given the **single USRP N210 setup**, design:
+
+* A feasible RF sensing system using GNU Radio
+* Explain:
+
+  * sensing mode (active radar-like, passive WiFi, etc.)
+  * signal processing pipeline
+  * features that can be extracted (Doppler, micro-Doppler, etc.)
+* Specify:
+
+  * what CAN be achieved with this setup
+  * what CANNOT (be realistic and critical)
+
+Then propose:
+
+* at least 3 **innovative SDR-based applications** for fall prevention or mobility analysis beyond simple fall detection
+
+---
+
+### **Step 4: IoT + AI + Blockchain Integration**
+
+Design a **layered system architecture**:
+
+* IoT sensing layer
+* SDR sensing layer
+* data processing layer
+* AI/ML intelligence layer
+* clinician interface
+* blockchain (only where it adds real value)
+
+Be explicit about:
+
+* data flow
+* system boundaries
+* edge vs cloud decisions
+* privacy and security considerations
+
+---
+
+### **Step 5: AI/ML Pipeline**
+
+Define:
+
+* problem formulations:
+
+  * fall detection
+  * near-fall detection
+  * gait instability
+  * mobility decline
+* model types:
+
+  * classical ML
+  * deep learning (if justified)
+  * anomaly detection
+
+Include:
+
+* feature engineering strategy
+* training pipeline
+* validation approach
+* explainability considerations
+
+---
+
+### **Step 6: Experimental Design**
+
+Propose a **multi-phase research pipeline**:
+
+#### Phase 1: Feasibility (lab-based)
+
+#### Phase 2: Activity recognition
+
+#### Phase 3: Clinical proxy modeling
+
+#### Phase 4: Integration with FAST outcomes
+
+#### Phase 5: Pilot or RCT extension
+
+For each phase, define:
+
+* dataset
+* participants
+* methods
+* expected outputs
+
+---
+
+### **Step 7: Research Contributions**
+
+Clearly articulate:
+
+* theoretical contributions
+* engineering contributions
+* clinical contributions
+
+Identify:
+
+* what is publishable at each stage
+* what makes the work novel vs existing research (e.g., MIT WiFi sensing work)
+
+---
+
+### **Step 8: Implementation Plan (12 Months)**
+
+Provide a realistic timeline:
+
+* months 1–3
+* months 4–6
+* months 7–9
+* months 10–12
+
+Include:
+
+* deliverables
+* risks
+* mitigation strategies
+
+---
+
+### **Step 9: Publication Strategy**
+
+Propose:
+
+* 3–5 high-quality paper ideas
+* target journals (tier-1 where possible)
+* positioning of each paper
+
+---
+
+### **Step 10: Critical Evaluation**
+
+End with:
+
+* key limitations of your proposed system
+* what would be required to scale it
+* ethical and regulatory considerations
+* future research directions
+
+---
+
+## **Output Style Requirements**
+
+* Write clearly, like advising a capable academic colleague
+* Avoid hype and buzzwords
+* Be technically precise but accessible
+* Prefer structured paragraphs over bullet overload
+* Prioritize insight over volume
+
+---
+
+## **Optional Add-on (if model is capable)**
+
+If possible, include:
+
+* diagrams (conceptual, described in text)
+* pseudo-code for SDR/ML pipeline
+* example GNU Radio flow description
+
+---
+
+# 🔷 How to Use This Prompt
+
+* Paste this into any LLM
+* Optionally add:
+  *“Focus more on [AI / SDR / clinical / blockchain] depending on your needs”*
+

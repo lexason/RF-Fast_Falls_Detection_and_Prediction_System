@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "evaluation_id": "rf-sensing-falls-v8-velocity-normalized-baseline-001-oof-transient-2026-09-13",
+  "model_id": "rf-sensing-falls-v8-velocity-normalized-baseline-001",
+  "environment": "DEVELOPMENT",
+  "status": "FAILED_ACCEPTANCE_CRITERIA",
+  "population": "pooled leave-one-day-or-geometry-out transient windows (derived from artifacts/evaluations/rf-sensing-falls-v8-velocity-normalized-dev-001-grouped-development-v1.json)",
+  "population_limitations": [
+    "single apparent researcher",
+    "single laboratory",
+    "no independent participant, room, site, calibration, or final test set",
+    "correlated and repeatedly reused development folds"
+  ],
+  "n_transient_windows": 216,
+  "n_fall_windows": 30,
+  "fall_prevalence": 0.1388888888888889,
+  "score_semantics": "uncalibrated_model_score_not_probability",
+  "discrimination": {
+    "auroc": 0.5618279569892473,
+    "auprc": 0.24598021856352248,
+    "brier": 0.15541071629789785,
+    "ece_10_bins": 0.15359542031122442
+  },
+  "threshold_policy": {
+    "threshold": 0.5,
+    "selection_status": "legacy_conservative_development_setting_not_independently_calibrated",
+    "recall": 0.23333333333333334,
+    "specificity": 0.9032258064516129,
+    "positive_predictive_value": 0.28,
+    "confusion": {
+      "tp": 7,
+      "fn": 23,
+      "fp": 18,
+      "tn": 168
+    },
+    "performance_gate_passed": false
+  },
+  "intended_use": "offline replay, engineering regression, and silent research demonstration only",
+  "prohibited_claims": [
+    "validated fall detector",
+    "calibrated probability",
+    "clinical alerting",
+    "unseen-participant generalisation"
+  ],
+  "derived_from": {
+    "candidate_id": "rf-sensing-falls-v8-velocity-normalized-dev-001",
+    "source_evaluation": "artifacts/evaluations/rf-sensing-falls-v8-velocity-normalized-dev-001-grouped-development-v1.json",
+    "source_evaluation_sha256": "6e08e32077ac95785e45261b611a95a92071475ada096e10cf62904b2bed4851"
+  }
+}

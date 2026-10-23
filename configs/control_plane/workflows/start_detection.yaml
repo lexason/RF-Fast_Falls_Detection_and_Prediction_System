@@ -1,0 +1,43 @@
+api_version: v1
+id: start_detection
+display_name: Start replay or simulation detection
+version: 2
+safety_class: operational
+required_scopes: [detection:read, detection:start, detection:stop]
+approval_policy: {mode: confirmation, reason_required: true, reference_required: false, distinct_approvers: false, approval_ttl_seconds: 0}
+allowed_environments: [DEVELOPMENT]
+allowed_source_states: [STOPPED, PREFLIGHT, FAILED]
+locks: [pipeline:preflight, pipeline:detection]
+timeout_seconds: 90
+dry_run_supported: true
+idempotency: {scope: workflow_and_parameters, duplicate_behavior: return_existing}
+parameters:
+  profile: {type: string, required: true, enum: [simulation, replay], pattern: "^[a-z][a-z0-9_]{1,63}$", max_length: 32, default: simulation}
+  replay_session: {type: string, required: false, pattern: "^[A-Za-z0-9][A-Za-z0-9._-]{2,95}$", min_length: 3, max_length: 96, default: 2026-07-18_fall_gain5}
+steps:
+  - id: validate_config
+    action: config.validate
+    arguments: {profile: {parameter_ref: profile}}
+    depends_on: []
+    timeout_seconds: 10
+    retry: {max_attempts: 1, backoff_seconds: 0}
+    cancellable: true
+    on_failure: rollback
+  - id: start_pipeline
+    action: pipeline.start
+    arguments: {profile: {parameter_ref: profile}, replay_session: {parameter_ref: replay_session}}
+    depends_on: [validate_config]
+    timeout_seconds: 60
+    retry: {max_attempts: 2, backoff_seconds: 0.1}
+    cancellable: true
+    on_failure: rollback
+postconditions:
+  - {subject: platform.state, operator: eq, expected: RUNNING}
+rollback:
+  - action: pipeline.stop
+    arguments: {reason: {literal: "Rollback after failed replay or simulation start"}}
+    timeout_seconds: 30
+audit:
+  event_types: [workflow.requested, workflow.step.completed, workflow.completed, workflow.failed]
+  redact_fields: [authorization, token]
+  reason_field: reason
